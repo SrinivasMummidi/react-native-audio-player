@@ -15,7 +15,13 @@
   "dependencies": {
     "@callstack/react-native-brownfield": "^1.2.0",
     "react": "19.1.0",
-    "react-native": "0.80.1"
+    "react-native": "0.80.1",
+    "react-native-audio-recorder-player": "^3.5.3",
+    "react-native-awesome-slider": "^2.9.0",
+    "react-native-gesture-handler": "^2.28.0",
+    "react-native-nitro-modules": "^0.26.4",
+    "react-native-reanimated": "^3.19.0",
+    "react-native-svg": "^15.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -42,7 +48,6 @@
     "react-test-renderer": "19.1.0",
     "typescript": "5.0.4"
   },
-  "peerDependencies": {},
   "engines": {
     "node": ">=18"
   }
