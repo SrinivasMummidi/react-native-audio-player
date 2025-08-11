@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 import { Slider } from 'react-native-awesome-slider';
 import { useSharedValue } from 'react-native-reanimated';
@@ -43,8 +43,9 @@ const VolumeOffIcon = () => (
 export default function SimpleAudioPlayer({ audioUrl }: SimpleAudioPlayerProps) {
   const url = audioUrl || DEFAULT_AUDIO_URL;
 
-  // single player instance
+  // Create a stable instance of AudioRecorderPlayer using useRef
   const playerRef = useRef(new AudioRecorderPlayer());
+  const player = playerRef.current;
 
   // UI state
   const [isPlaying, setIsPlaying] = useState(false);
@@ -65,12 +66,12 @@ export default function SimpleAudioPlayer({ audioUrl }: SimpleAudioPlayerProps) 
     try {
       // stop any previous playback
       try {
-        await playerRef.current.stopPlayer();
-        playerRef.current.removePlayBackListener();
+        await player.stopPlayer();
+        player.removePlayBackListener();
       } catch {}
 
       // attach listener
-      playerRef.current.addPlayBackListener((e: PlayBackType) => {
+  player.addPlayBackListener((e: PlayBackType) => {
         const targetDuration = e.duration > 0 ? Math.min(e.duration, MAX_PREVIEW_MS) : MAX_PREVIEW_MS;
         setTotalDuration(targetDuration);
 
@@ -86,28 +87,28 @@ export default function SimpleAudioPlayer({ audioUrl }: SimpleAudioPlayerProps) 
         if (targetDuration > 0 && e.currentPosition >= targetDuration) {
           setIsPlaying(false);
           progress.value = 0;
-          playerRef.current.stopPlayer().catch(() => {});
-          playerRef.current.removePlayBackListener();
+          player.stopPlayer().catch(() => {});
+          player.removePlayBackListener();
         }
       });
 
-      await playerRef.current.startPlayer(url);
+      await player.startPlayer(url);
       // Apply current volume and rate if available
-      try { await playerRef.current.setVolume(isMuted ? 0 : 1); } catch {}
+      try { await player.setVolume(isMuted ? 0 : 1); } catch {}
       try {
         // Try multiple method names across platforms/versions
         // @ts-ignore
-        if (playerRef.current.setRate) { // @ts-ignore
-          await playerRef.current.setRate(rate); }
+        if (player.setRate) { // @ts-ignore
+          await player.setRate(rate); }
         // @ts-ignore
-        else if (playerRef.current.setPlaybackRate) { // @ts-ignore
-          await playerRef.current.setPlaybackRate(rate); }
+        else if (player.setPlaybackRate) { // @ts-ignore
+          await player.setPlaybackRate(rate); }
         // @ts-ignore
-        else if (playerRef.current.setSpeed) { // @ts-ignore
-          await playerRef.current.setSpeed(rate); }
+        else if (player.setSpeed) { // @ts-ignore
+          await player.setSpeed(rate); }
         // @ts-ignore
-        else if (playerRef.current.setPlaybackSpeed) { // @ts-ignore
-          await playerRef.current.setPlaybackSpeed(rate); }
+        else if (player.setPlaybackSpeed) { // @ts-ignore
+          await player.setPlaybackSpeed(rate); }
       } catch {}
       setIsPlaying(true);
       setIsLoading(false); // flip spinner off immediately after start
@@ -117,35 +118,39 @@ export default function SimpleAudioPlayer({ audioUrl }: SimpleAudioPlayerProps) 
     } finally {
       // keep no-op: isLoading already set false right after start
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
   }, [url, isBuffering, progress, isMuted, rate]);
 
   const onPausePlay = useCallback(async () => {
     try {
-      await playerRef.current.pausePlayer();
+  await player.pausePlayer();
       setIsPlaying(false);
     } catch (e) {
       console.error('pause failed', e);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
   }, []);
 
   const onResumePlay = useCallback(async () => {
     try {
-      await playerRef.current.resumePlayer();
+  await player.resumePlayer();
       setIsPlaying(true);
     } catch (e) {
       console.error('resume failed', e);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
   }, []);
 
   const onSeek = useCallback(async (value: number) => {
     if (totalDuration > 0) {
       const seekTime = (value / 100) * totalDuration;
       try {
-        await playerRef.current.seekToPlayer(seekTime);
+  await player.seekToPlayer(seekTime);
       } catch (e) {
         console.error('seek failed', e);
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
   }, [totalDuration]);
 
   const handlePlayPause = useCallback(() => {
@@ -163,7 +168,8 @@ export default function SimpleAudioPlayer({ audioUrl }: SimpleAudioPlayerProps) 
   const toggleMute = useCallback(async () => {
     const next = !isMuted;
     setIsMuted(next);
-    try { await playerRef.current.setVolume(next ? 0 : 1); } catch {}
+  try { await player.setVolume(next ? 0 : 1); } catch {}
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
   }, [isMuted]);
 
   const cycleRate = useCallback(async () => {
@@ -173,18 +179,19 @@ export default function SimpleAudioPlayer({ audioUrl }: SimpleAudioPlayerProps) 
     setRate(next);
     try {
       // @ts-ignore
-      if (playerRef.current.setRate) { // @ts-ignore
-        await playerRef.current.setRate(next);
+      if (player.setRate) { // @ts-ignore
+        await player.setRate(next);
       }
     } catch {}
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
   }, [rate]);
 
   useEffect(() => {
-    const player = playerRef.current;
     return () => {
       player.stopPlayer().catch(() => {});
       player.removePlayBackListener();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
   }, []);
 
   return (

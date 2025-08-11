@@ -69,7 +69,7 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
   const [volume, setVolume] = useState(1.0);
   const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
   
-  const audioRecorderPlayerRef = useRef(AudioRecorderPlayer);
+  const audioRecorderPlayerRef = useRef(new AudioRecorderPlayer());
 
   // Request permissions for Android
   const requestPermissions = useCallback(async () => {
@@ -106,11 +106,12 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
       audioRecorderPlayerRef.current.addPlayBackListener((e: PlayBackType) => {
         setCurrentPosition(e.currentPosition);
         setTotalDuration(e.duration);
-      });
-
-      audioRecorderPlayerRef.current.addPlaybackEndListener(() => {
-        setIsPlaying(false);
-        setCurrentPosition(0);
+        
+        // Check if playback has ended
+        if (e.duration > 0 && e.currentPosition >= e.duration) {
+          setIsPlaying(false);
+          setCurrentPosition(0);
+        }
       });
 
       await audioRecorderPlayerRef.current.startPlayer(audioUrl);
@@ -147,7 +148,6 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     try {
       await audioRecorderPlayerRef.current.stopPlayer();
       audioRecorderPlayerRef.current.removePlayBackListener();
-      audioRecorderPlayerRef.current.removePlaybackEndListener();
       setIsPlaying(false);
       setCurrentPosition(0);
     } catch (error) {
@@ -270,7 +270,6 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
       audioRecorderPlayer.stopPlayer();
       audioRecorderPlayer.stopRecorder();
       audioRecorderPlayer.removePlayBackListener();
-      audioRecorderPlayer.removePlaybackEndListener();
       audioRecorderPlayer.removeRecordBackListener();
     };
   }, []);

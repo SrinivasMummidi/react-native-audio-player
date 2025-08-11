@@ -11,10 +11,10 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		20D164A02D4D80800039A91E /* NativeAppReact.h in Headers */ = {isa = PBXBuildFile; fileRef = 20D1649E2D4D80800039A91E /* NativeAppReact.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		20D164A22D4D80990039A91E /* NativeAppReact.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D164A12D4D80950039A91E /* NativeAppReact.swift */; };
+		61BD3380EC696406ABB6651B /* Pods_NativeApp_NativeAppReact.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5ED4AAFA5E2853423E67BCED /* Pods_NativeApp_NativeAppReact.framework */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		B16C603D25A2E5456D38112F /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
-		BF13B756F424448D9A30BD62 /* Pods_NativeApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAAFC731385E67C319CC5C01 /* Pods_NativeApp.framework */; };
-		F79AC91F2CDC4844EA26295B /* Pods_NativeApp_NativeAppReact.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3AE4BF797AAAE4FE66A28B6 /* Pods_NativeApp_NativeAppReact.framework */; };
+		EF10AF2C29FBE7F5FF653E4C /* Pods_NativeApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46A0DFC41734E2601E44AA5D /* Pods_NativeApp.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,12 +28,12 @@
 		20D164A12D4D80950039A91E /* NativeAppReact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeAppReact.swift; sourceTree = "<group>"; };
 		25056119C0BDA4CDB86B24D9 /* Pods-NativeApp-NativeAppReact.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NativeApp-NativeAppReact.release.xcconfig"; path = "Target Support Files/Pods-NativeApp-NativeAppReact/Pods-NativeApp-NativeAppReact.release.xcconfig"; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-NativeApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NativeApp.debug.xcconfig"; path = "Target Support Files/Pods-NativeApp/Pods-NativeApp.debug.xcconfig"; sourceTree = "<group>"; };
+		46A0DFC41734E2601E44AA5D /* Pods_NativeApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NativeApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D838915DF00B87281042637 /* Pods-NativeApp-NativeAppReact.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NativeApp-NativeAppReact.debug.xcconfig"; path = "Target Support Files/Pods-NativeApp-NativeAppReact/Pods-NativeApp-NativeAppReact.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-NativeApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NativeApp.release.xcconfig"; path = "Target Support Files/Pods-NativeApp/Pods-NativeApp.release.xcconfig"; sourceTree = "<group>"; };
+		5ED4AAFA5E2853423E67BCED /* Pods_NativeApp_NativeAppReact.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NativeApp_NativeAppReact.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = NativeApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		CAAFC731385E67C319CC5C01 /* Pods_NativeApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NativeApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		F3AE4BF797AAAE4FE66A28B6 /* Pods_NativeApp_NativeAppReact.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NativeApp_NativeAppReact.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,7 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF13B756F424448D9A30BD62 /* Pods_NativeApp.framework in Frameworks */,
+				EF10AF2C29FBE7F5FF653E4C /* Pods_NativeApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -49,7 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F79AC91F2CDC4844EA26295B /* Pods_NativeApp_NativeAppReact.framework in Frameworks */,
+				61BD3380EC696406ABB6651B /* Pods_NativeApp_NativeAppReact.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,8 +81,8 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				CAAFC731385E67C319CC5C01 /* Pods_NativeApp.framework */,
-				F3AE4BF797AAAE4FE66A28B6 /* Pods_NativeApp_NativeAppReact.framework */,
+				46A0DFC41734E2601E44AA5D /* Pods_NativeApp.framework */,
+				5ED4AAFA5E2853423E67BCED /* Pods_NativeApp_NativeAppReact.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -417,8 +417,13 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = NativeApp;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -444,7 +449,12 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = NativeApp;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
