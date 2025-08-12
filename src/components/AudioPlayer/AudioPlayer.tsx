@@ -57,7 +57,7 @@ export const AudioPlayerContent: React.FC<
   showTotalTime = false,
   sourceLoading = false,
 }) => {
-  const { error, currentPosition, totalDuration } = useAudioPlayer();
+  const { error, currentPosition, totalDuration, isReady } = useAudioPlayer();
 
   return (
     <View
@@ -80,7 +80,8 @@ export const AudioPlayerContent: React.FC<
           iconSize={playButtonSize * 1.4}
           color={textColor}
           loadingColor={primaryColor}
-          forceLoading={sourceLoading}
+          forceLoading={!isReady || sourceLoading}
+          disabled={!isReady}
         />
 
         <View style={styles.trackContainer}>
@@ -155,6 +156,7 @@ const styles = StyleSheet.create({
     fontVariant: ['tabular-nums'],
     minWidth: 35,
     textAlign: 'center',
+  textAlignVertical: 'center',
   },
   trackContainer: {
     flex: 1,

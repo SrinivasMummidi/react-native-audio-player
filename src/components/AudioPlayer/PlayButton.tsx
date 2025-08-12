@@ -75,9 +75,10 @@ export const PlayButton: React.FC<PlayButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: 'transparent',
+  alignSelf: 'center',
   },
   disabled: {
     opacity: 0.5,

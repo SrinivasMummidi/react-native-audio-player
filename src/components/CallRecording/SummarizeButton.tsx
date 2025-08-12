@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   ActivityIndicator,
-  View,
 } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
@@ -42,9 +41,6 @@ export const SummarizeButton: React.FC<SummarizeButtonProps> = ({
       <Text style={styles.summariseText}>
         {isLoading ? 'Summarising…' : 'Summarise'}
       </Text>
-      <View style={styles.newBadge}>
-        <Text style={styles.newBadgeText}>NEW</Text>
-      </View>
     </TouchableOpacity>
   );
 };

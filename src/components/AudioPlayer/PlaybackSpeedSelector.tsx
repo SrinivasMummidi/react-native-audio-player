@@ -41,9 +41,11 @@ export const PlaybackSpeedSelector: React.FC<PlaybackSpeedSelectorProps> = ({
       <Text
         style={[
           styles.text,
+          styles.verticalAlignText,
           {
             color: textColor,
             fontSize,
+            lineHeight: fontSize,
           },
         ]}
       >
@@ -59,9 +61,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     minWidth: 32,
+  alignSelf: 'center',
   },
   text: {
     fontWeight: '500',
     fontVariant: ['tabular-nums'],
+  },
+  verticalAlignText: {
+    textAlignVertical: 'center',
+    includeFontPadding: false,
   },
 });

@@ -10,6 +10,8 @@ export interface AudioPlayerContextType {
   isPlaying: boolean;
   isLoading: boolean;
   isBuffering: boolean;
+  /** True when we have discovered duration for current URL */
+  isReady: boolean;
   currentPosition: number; // in milliseconds
   totalDuration: number; // in milliseconds
   
@@ -68,6 +70,7 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
   const [isBuffering, setIsBuffering] = useState(false);
   const [currentPosition, setCurrentPosition] = useState(0);
   const [totalDuration, setTotalDuration] = useState(0);
+  const [isReady, setIsReady] = useState(false);
   const [volume, setVolumeState] = useState(75);
   const [isMuted, setIsMuted] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(playbackRates[1]); // 1.0x
@@ -232,6 +235,38 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     };
   }, [player]);
 
+  // Helper to probe duration without exposing playback or touching loading flags
+  const probeDuration = useCallback(async (url: string) => {
+    // Already have it
+    if (totalDuration > 0 && isReady) return;
+    let gotDuration = false;
+    try {
+      // Ensure clean state
+      try {
+        await player.stopPlayer();
+        player.removePlayBackListener();
+      } catch {}
+
+      const listener = (e: PlayBackType) => {
+        if (e.duration && e.duration > 0 && !gotDuration) {
+          gotDuration = true;
+          setTotalDuration(e.duration);
+          setCurrentPosition(0);
+          setIsReady(true);
+          player.stopPlayer().catch(() => {});
+          player.removePlayBackListener();
+        }
+      };
+      player.addPlayBackListener(listener);
+
+      await player.startPlayer(url);
+      // Mute during probe to avoid audible blip
+      try { await player.setVolume(0); } catch {}
+    } catch (err) {
+      // Leave isReady as-is; play() can still establish duration
+    }
+  }, [player, totalDuration, isReady]);
+
   // Sync incoming defaultAudioUrl prop to internal state; stop current playback if URL changes
   useEffect(() => {
     // Allow clearing URL too
@@ -245,11 +280,20 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
       }
       setCurrentPosition(0);
       setTotalDuration(0);
+      setIsReady(false);
       setError(null);
       setAudioUrl(nextUrl);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultAudioUrl]);
+
+  // Preload current URL to discover duration; no timers, minimal state changes
+  useEffect(() => {
+    if (!audioUrl) return;
+    if (isReady || totalDuration > 0) return;
+    probeDuration(audioUrl);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [audioUrl]);
 
   
   const contextValue: AudioPlayerContextType = {
@@ -257,6 +301,7 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     isPlaying,
     isLoading,
     isBuffering,
+    isReady,
     currentPosition,
     totalDuration,
     volume,

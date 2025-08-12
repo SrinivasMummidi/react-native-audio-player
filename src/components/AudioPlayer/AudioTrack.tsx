@@ -20,7 +20,7 @@ export const AudioTrack: React.FC<AudioTrackProps> = ({
   thumbColor = '#3b82f6',
   containerStyle,
 }) => {
-  const { currentPosition, totalDuration, seekTo, isLoading } =
+  const { currentPosition, totalDuration, seekTo, isReady } =
     useAudioPlayer();
 
   // Calculate progress percentage
@@ -49,14 +49,6 @@ export const AudioTrack: React.FC<AudioTrackProps> = ({
     [totalDuration, seekTo],
   );
 
-  if (isLoading && totalDuration === 0) {
-    return (
-      <View style={[styles.trackOnlyContainer, containerStyle]}>
-        <View style={[styles.trackPlaceholder, { height }]} />
-      </View>
-    );
-  }
-
   return (
     <View style={[styles.trackOnlyContainer, containerStyle]}>
       <Slider
@@ -75,8 +67,8 @@ export const AudioTrack: React.FC<AudioTrackProps> = ({
           heartbeatColor: thumbColor,
         }}
         onSlidingComplete={handleValueChange}
-        containerStyle={styles.sliderContainer}
-        disable={totalDuration === 0}
+  containerStyle={[styles.sliderContainer, { height: Math.max(6, height + 4) }]}
+  disable={!isReady || totalDuration === 0}
       />
     </View>
   );
@@ -91,13 +83,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sliderContainer: {
-    justifyContent: 'center',
-    height: 6,
+  justifyContent: 'center',
     borderRadius: 3,
-  },
-  trackPlaceholder: {
-    backgroundColor: '#e5e7eb',
-    borderRadius: 2,
-    marginHorizontal: 8,
   },
 });
