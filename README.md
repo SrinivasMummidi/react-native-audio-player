@@ -1,29 +1,23 @@
 # React Native Audio Player
 
-A comprehensive React Native audio player built with `react-native-audio-recorder-player` and `react-native-awesome-slider`, inspired by the Phonesystem web audio player.
+A clean, single audio player for React Native built on `react-native-audio-recorder-player` and `react-native-awesome-slider`.
+
+This repository was simplified to one canonical implementation named AudioPlayer. Legacy variants (SimpleAudioPlayer, ContextAudioPlayer, EnhancedAudioPlayer) and recording code were removed.
+
+See MIGRATION.md for upgrade notes from older versions within this repo.
 
 ## Features
 
-### Core Audio Features
-- ✅ Audio playback with play/pause/stop controls
-- ✅ Seeking with interactive slider control
-- ✅ Skip forward/backward (10 seconds)
-- ✅ Volume control (0-100%)
-- ✅ Playback speed control (0.5x to 2.0x)
-- ✅ Real-time progress tracking
-- ✅ Duration and current time display
-
-### Recording Features
-- ✅ Audio recording with high-quality settings
-- ✅ Recording pause/resume functionality
-- ✅ Real-time recording time display
-- ✅ Automatic permission handling for Android/iOS
+### Playback
+- ✅ Play/pause/stop controls
+- ✅ Seek with an interactive slider
+- ✅ Playback speed control (0.5x–2.0x)
+- ✅ Real-time progress with remaining time option
+- ✅ Volume/mute support at the provider level
 
 ### Architecture
-- ✅ Three different implementation approaches:
-  - **SimpleAudioPlayer**: Basic playback-only component
-  - **AudioPlayer**: Full-featured standalone component
-  - **ContextAudioPlayer**: Context-based state management (recommended)
+- ✅ Context-based state management with AudioPlayerProvider
+- ✅ Composable UI pieces (PlayButton, AudioTrack, PlaybackSpeedSelector)
 
 ## Installation
 
@@ -59,63 +53,40 @@ Add permissions to `android/app/src/main/AndroidManifest.xml`:
 
 ## Usage
 
-### Simple Audio Player (Playback Only)
+There are two common ways to use the player: a simple drop-in component, or composing your own UI with the context.
 
-```tsx
-import { SimpleAudioPlayer } from './src/components/AudioPlayer';
-
-function MyComponent() {
-  return (
-    <SimpleAudioPlayer 
-      audioUrl="https://example.com/audio.mp3"
-      autoPlay={false}
-    />
-  );
-}
-```
-
-### Full Audio Player (Playback + Recording)
+### 1) Drop-in player
 
 ```tsx
 import { AudioPlayer } from './src/components/AudioPlayer';
 
-function MyComponent() {
-  const handleRecordingComplete = (filePath: string) => {
-    console.log('Recording saved to:', filePath);
-  };
-
+export function MyScreen() {
   return (
     <AudioPlayer
       audioUrl="https://example.com/audio.mp3"
-      onRecordingComplete={handleRecordingComplete}
-      showRecording={true}
+      // optional UI tweaks
+      showPlaybackSpeed
+      showTotalTime
     />
   );
 }
 ```
 
-### Context-Based Audio Player (Recommended)
+### 2) Compose with context
 
 ```tsx
-import { AudioPlayerProvider, ContextAudioPlayer, useAudioPlayer } from './src/components/AudioPlayer';
+import { AudioPlayerProvider, AudioPlayerContent, useAudioPlayer } from './src/components/AudioPlayer';
 
-function AudioPlayerWrapper() {
-  const { setAudioUrl } = useAudioPlayer();
-  
+export function MyScreen() {
+  const [url, setUrl] = React.useState<string | undefined>();
+
   React.useEffect(() => {
-    setAudioUrl('https://example.com/audio.mp3');
+    setUrl('https://example.com/audio.mp3');
   }, []);
 
-  return <ContextAudioPlayer showRecording={true} />;
-}
-
-function App() {
   return (
-    <AudioPlayerProvider
-      onRecordingComplete={(filePath) => console.log('Recorded:', filePath)}
-      onError={(error) => console.error('Error:', error)}
-    >
-      <AudioPlayerWrapper />
+    <AudioPlayerProvider defaultAudioUrl={url}>
+      <AudioPlayerContent showPlaybackSpeed showTotalTime />
     </AudioPlayerProvider>
   );
 }
@@ -123,74 +94,54 @@ function App() {
 
 ## API Reference
 
-### SimpleAudioPlayer Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `audioUrl` | `string` | `undefined` | URL of the audio file to play |
-| `autoPlay` | `boolean` | `false` | Whether to start playing automatically |
-
 ### AudioPlayer Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `audioUrl` | `string` | `undefined` | URL of the audio file to play |
-| `onRecordingComplete` | `(filePath: string) => void` | `undefined` | Callback when recording is completed |
-| `showRecording` | `boolean` | `true` | Whether to show recording controls |
+| `onError` | `(error: string) => void` | `undefined` | Error callback when playback fails |
+| UI props | Various | See source | Styling and visibility flags (e.g., showPlaybackSpeed, showTotalTime) |
 
 ### AudioPlayerProvider Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `children` | `ReactNode` | - | Child components |
-| `onRecordingComplete` | `(filePath: string) => void` | `undefined` | Callback when recording is completed |
-| `onError` | `(error: string) => void` | `undefined` | Error callback |
+| `defaultAudioUrl` | `string` | `undefined` | Initial URL to load |
+| `onError` | `(error: string) => void` | `undefined` | Error callback when playback fails |
 
-### AudioPlayerContext Methods
+### useAudioPlayer
 
 ```tsx
 const {
   // Playback state
   isPlaying,
+  isLoading,
+  isBuffering,
   currentPosition,
   totalDuration,
-  isLoading,
   audioUrl,
-  
-  // Recording state
-  isRecording,
-  recordTime,
-  isPaused,
-  
+
   // Audio settings
   volume,
+  isMuted,
   playbackSpeed,
-  
+
   // Actions
   setAudioUrl,
-  startPlayback,
-  pausePlayback,
-  resumePlayback,
-  stopPlayback,
+  play,
+  pause,
+  stop,
   seekTo,
-  skipForward,
-  skipBackward,
-  setVolumeLevel,
-  setSpeed,
-  
-  // Recording actions
-  startRecording,
-  stopRecording,
-  pauseRecording,
-  resumeRecording,
+  toggleMute,
+  cyclePlaybackSpeed,
 } = useAudioPlayer();
 ```
 
 ## Supported Audio Formats
 
-- **iOS**: MP3, AAC, WAV, M4A, AIFF, CAF
-- **Android**: MP3, AAC, WAV, OGG, FLAC, AMR
-- **Recording**: AAC format (high quality)
+- iOS: MP3, AAC, WAV, M4A, AIFF, CAF
+- Android: MP3, AAC, WAV, OGG, FLAC, AMR
 
 ## Permissions
 
@@ -198,7 +149,7 @@ The components automatically handle permission requests on Android. For iOS, ens
 
 ## Comparison with Web Version
 
-This React Native implementation closely mirrors the functionality of the Phonesystem web audio player:
+This React Native implementation mirrors the Phonesystem web audio player for playback UX:
 
 | Feature | Web Version | React Native Version |
 |---------|-------------|---------------------|
@@ -206,27 +157,15 @@ This React Native implementation closely mirrors the functionality of the Phones
 | Progress Slider | ✅ Custom slider | ✅ react-native-awesome-slider |
 | Volume Control | ✅ Web API | ✅ Native volume control |
 | Speed Control | ✅ Web API | ✅ Native speed control |
-| Recording | ✅ MediaRecorder API | ✅ Native recording |
-| Context State Management | ✅ React Context | ✅ React Context |
-| Time Formatting | ✅ Custom utils | ✅ Custom utils |
-| Permission Handling | ✅ Web permissions | ✅ Native permissions |
+| Context State | ✅ React Context | ✅ React Context |
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **Audio not playing on iOS Simulator**: Test on a real device, as audio features may not work properly on the simulator.
-
-2. **Permission denied on Android**: Ensure all required permissions are added to AndroidManifest.xml and the app targets the correct SDK version.
-
-3. **Build errors after installation**: 
-   ```bash
-   cd ios && pod install
-   npx react-native clean
-   npx react-native run-ios
-   ```
-
-4. **Reanimated issues**: Make sure you're using compatible versions of react-native-reanimated and react-native-gesture-handler.
+1. Audio not playing on iOS Simulator: Prefer a real device; simulators can be limited for audio.
+2. Permission denied on Android: Ensure required permissions are added to AndroidManifest.xml.
+3. Reanimated issues: Use compatible versions of react-native-reanimated and react-native-gesture-handler.
 
 ### Performance Tips
 
@@ -236,11 +175,11 @@ This React Native implementation closely mirrors the functionality of the Phones
 
 ## License
 
-This implementation follows the same architectural patterns as the original Phonesystem audio player and is built using MIT-licensed packages.
+MIT
 
 ## Dependencies
 
-- [react-native-audio-recorder-player](https://github.com/hyochan/react-native-audio-recorder-player) - Audio recording and playback
-- [react-native-awesome-slider](https://github.com/alantoa/react-native-awesome-slider) - Interactive sliders
-- [react-native-reanimated](https://docs.swmansion.com/react-native-reanimated/) - Smooth animations
-- [react-native-gesture-handler](https://docs.swmansion.com/react-native-gesture-handler/) - Touch handling
+- [react-native-audio-recorder-player](https://github.com/hyochan/react-native-audio-recorder-player) – Audio playback
+- [react-native-awesome-slider](https://github.com/alantoa/react-native-awesome-slider) – Interactive slider
+- [react-native-reanimated](https://docs.swmansion.com/react-native-reanimated/) – Animations
+- [react-native-gesture-handler](https://docs.swmansion.com/react-native-gesture-handler/) – Touch handling
