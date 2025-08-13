@@ -16,7 +16,7 @@ const WordComponent: React.FC<WordComponentProps> = ({
   shouldHighlight,
   onPress,
   segmentIndex,
-  wordIndex
+  wordIndex,
 }) => {
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
@@ -24,10 +24,7 @@ const WordComponent: React.FC<WordComponentProps> = ({
         text={word.text}
         segmentIndex={segmentIndex}
         wordIndex={wordIndex}
-        style={[
-          styles.word,
-          shouldHighlight && styles.pastWord
-        ]}
+        style={[styles.word, shouldHighlight && styles.pastWord]}
         onPress={onPress}
       />
     </TouchableOpacity>
@@ -42,6 +39,7 @@ interface TranscriptSegmentProps {
   segmentIndex: number;
   onWordPress: (time: number) => void;
   isActiveSegment?: boolean;
+  isPlaying: boolean;
 }
 
 const TranscriptSegment: React.FC<TranscriptSegmentProps> = ({
@@ -51,6 +49,7 @@ const TranscriptSegment: React.FC<TranscriptSegmentProps> = ({
   currentTime,
   segmentIndex,
   onWordPress,
+  isPlaying,
 }) => {
   const speaker = speakerLabels[speakerId];
   const speakerName = speaker?.name || speaker?.type || speakerId;
@@ -63,7 +62,8 @@ const TranscriptSegment: React.FC<TranscriptSegmentProps> = ({
       </View>
       <View style={styles.wordsContainer}>
         {words.map((word, index) => {
-          const shouldHighlight = currentTime >= word.start;
+          const shouldHighlight =
+            currentTime >= word.start || (!isPlaying && currentTime === 0);
           return (
             <WordComponent
               key={`${speakerId}-${index}`}
@@ -72,7 +72,7 @@ const TranscriptSegment: React.FC<TranscriptSegmentProps> = ({
               segmentIndex={segmentIndex}
               wordIndex={index}
               onPress={() => {
-                onWordPress(word.start)
+                onWordPress(word.start);
               }}
             />
           );

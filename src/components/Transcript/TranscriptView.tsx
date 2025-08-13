@@ -11,11 +11,15 @@ import SearchInput from '../Search/SearchInput';
 interface TranscriptViewProps {
   words: Word[];
   speakerLabels: SpeakerLabels;
+  autoScroll?: boolean;
+  onManualScroll?: () => void;
 }
 
 const TranscriptViewContent: React.FC<TranscriptViewProps> = ({
   words,
   speakerLabels,
+  autoScroll = true,
+  onManualScroll,
 }) => {
   const scrollViewRef = useRef<ScrollView>(null);
   const rowPositionsRef = useRef<number[]>([]);
@@ -56,7 +60,8 @@ const TranscriptViewContent: React.FC<TranscriptViewProps> = ({
   useEffect(() => {
     if (searchState.currentMatchIndex >= 0 && searchState.matches.length > 0) {
       const currentMatch = searchState.matches[searchState.currentMatchIndex];
-      const segmentPosition = rowPositionsRef.current[currentMatch.segmentIndex];
+      const segmentPosition =
+        rowPositionsRef.current[currentMatch.segmentIndex];
 
       if (typeof segmentPosition === 'number') {
         const targetPosition = Math.max(0, segmentPosition - 120);
@@ -84,13 +89,15 @@ const TranscriptViewContent: React.FC<TranscriptViewProps> = ({
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={true}
         bounces={false}
+        onScrollBeginDrag={onManualScroll}
+        onTouchStart={onManualScroll}
       >
         {segments.map((segment, index) => {
           const isActiveSegment = index === activeSegmentIndex;
           return (
             <View
               key={`${segment.speaker_id}-${index}`}
-              onLayout={(e) => {
+              onLayout={e => {
                 rowPositionsRef.current[index] = e.nativeEvent.layout.y;
               }}
             >
@@ -102,6 +109,7 @@ const TranscriptViewContent: React.FC<TranscriptViewProps> = ({
                 segmentIndex={index}
                 onWordPress={seek}
                 isActiveSegment={isActiveSegment}
+                isPlaying={isPlaying}
               />
             </View>
           );
@@ -109,11 +117,14 @@ const TranscriptViewContent: React.FC<TranscriptViewProps> = ({
       </ScrollView>
     </View>
   );
-}
+};
 
 // Main component that provides search context
-const TranscriptView: React.FC<TranscriptViewProps> = (props) => {
-  const segments = useMemo(() => formatTranscriptData(props.words), [props.words]);
+const TranscriptView: React.FC<TranscriptViewProps> = props => {
+  const segments = useMemo(
+    () => formatTranscriptData(props.words),
+    [props.words],
+  );
 
   return (
     <SearchProvider transcriptSegments={segments}>

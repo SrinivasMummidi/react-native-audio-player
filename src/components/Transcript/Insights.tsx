@@ -1,10 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { TouchableOpacity, View, StyleSheet, Text } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  TouchableOpacity,
+  View,
+  StyleSheet,
+  Text,
+  Platform,
+  ToastAndroid,
+  Alert,
+} from 'react-native';
 import { fetchInsights } from '../../services/fetchInsights';
 import { MockResponseData } from '../../types/types';
 import { useAudioPlayerContext } from '../../context/TranscriptAudioPlayerContext';
 import TranscriptView from './TranscriptView';
 import CallPanelFooter from '../CallRecording/CallPanelFooter';
+import Clipboard from '@react-native-clipboard/clipboard';
+import { LoadingSpinner } from '../common/LoadingSpinner';
 
 function Insights() {
   const [activeTab, setActiveTab] = useState<'summary' | 'transcript' | null>(
@@ -14,6 +24,12 @@ function Insights() {
     null,
   );
   const { getAccessToken, connectionId } = useAudioPlayerContext();
+  const [autoSync, setAutoSync] = useState<boolean>(true);
+
+  const transcriptPlainText = useMemo(() => {
+    if (!transcriptData) return '';
+    return transcriptData.data.transcript.data.words.map(w => w.text).join(' ');
+  }, [transcriptData]);
 
   useEffect(() => {
     try {
@@ -39,6 +55,7 @@ function Insights() {
           onPress={() => {
             setActiveTab('summary');
           }}
+          activeOpacity={1}
         >
           <Text
             style={[
@@ -57,6 +74,7 @@ function Insights() {
           onPress={() => {
             setActiveTab('transcript');
           }}
+          activeOpacity={1}
         >
           <Text
             style={[
@@ -69,6 +87,12 @@ function Insights() {
         </TouchableOpacity>
       </View>
 
+      {activeTab === 'summary' && !transcriptData && (
+        <View style={[styles.contentContainer, styles.loadingSection]}>
+          <LoadingSpinner size={24} />
+        </View>
+      )}
+
       {activeTab === 'summary' && transcriptData && (
         <>
           <View style={styles.contentContainer}>
@@ -76,8 +100,30 @@ function Insights() {
               {transcriptData.data.summary.text}
             </Text>
           </View>
-          <CallPanelFooter />
+          <CallPanelFooter
+            showTarget={false}
+            onCopyPress={() => {
+              Clipboard.setString(transcriptData.data.summary.text);
+              if (Platform.OS === 'android') {
+                ToastAndroid.show('Summary copied', ToastAndroid.SHORT);
+              } else {
+                Alert.alert('Copied', 'Summary copied');
+              }
+            }}
+          />
         </>
+      )}
+
+      {activeTab === 'transcript' && !transcriptData && (
+        <View
+          style={[
+            styles.contentContainer,
+            styles.transcriptionContainer,
+            styles.loadingSection,
+          ]}
+        >
+          <LoadingSpinner size={24} />
+        </View>
       )}
 
       {activeTab === 'transcript' && transcriptData && (
@@ -92,10 +138,24 @@ function Insights() {
               <TranscriptView
                 words={transcriptData.data.transcript.data.words}
                 speakerLabels={transcriptData.data.transcript.speakerLabels}
+                autoScroll={autoSync}
+                onManualScroll={() => setAutoSync(false)}
               />
             </View>
           </View>
-          <CallPanelFooter />
+          <CallPanelFooter
+            showTarget={true}
+            targetActive={autoSync}
+            onTargetPress={() => setAutoSync(prev => !prev)}
+            onCopyPress={() => {
+              Clipboard.setString(transcriptPlainText);
+              if (Platform.OS === 'android') {
+                ToastAndroid.show('Transcript copied', ToastAndroid.SHORT);
+              } else {
+                Alert.alert('Copied', 'Transcript copied');
+              }
+            }}
+          />
         </>
       )}
     </View>
@@ -138,10 +198,15 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: 'white',
     borderRadius: 10,
+    minHeight: 200,
   },
   transcriptionContainer: {
     paddingRight: 0,
     minHeight: 200,
+  },
+  loadingSection: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   contentText: {
     fontSize: 12,

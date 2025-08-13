@@ -5,10 +5,12 @@ import { TranscriptSegment, SearchableWord } from '../../types/types';
  * Creates a Fuse.js search matcher for transcript segments
  * Similar to audio-transcript-player implementation
  */
-export function createTranscriptMatcher(segments: TranscriptSegment[]): (searchQuery: string) => FuseResult<SearchableWord>[] {
+export function createTranscriptMatcher(
+  segments: TranscriptSegment[],
+): (searchQuery: string) => FuseResult<SearchableWord>[] {
   // Flatten all words from all segments for search
   const searchableWords: SearchableWord[] = [];
-  
+
   segments.forEach((segment, segmentIndex) => {
     segment.words.forEach((word, wordIndex) => {
       if (word.type === 'word') {
@@ -36,12 +38,14 @@ export function createTranscriptMatcher(segments: TranscriptSegment[]): (searchQ
     }
 
     // Split search query into keywords and filter unique terms
-    const keywords = Array.from(new Set(searchQuery.split(' ').filter(Boolean)));
-    const uniqueQueries = keywords.filter((keyword) => {
-      return !keywords.find((key) => key !== keyword && key.includes(keyword));
+    const keywords = Array.from(
+      new Set(searchQuery.split(' ').filter(Boolean)),
+    );
+    const uniqueQueries = keywords.filter(keyword => {
+      return !keywords.find(key => key !== keyword && key.includes(keyword));
     });
 
     // Search for each unique query and combine results
-    return uniqueQueries.flatMap((query) => fuse.search(query));
+    return uniqueQueries.flatMap(query => fuse.search(query));
   };
 }

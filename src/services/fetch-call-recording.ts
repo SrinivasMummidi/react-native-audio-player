@@ -7,7 +7,10 @@ import {
   isEnvironment,
   isProduction,
 } from '../lib/environment';
-import type { CallRecordingParams, CallRecordingResponse } from '../types/types';
+import type {
+  CallRecordingParams,
+  CallRecordingResponse,
+} from '../types/types';
 
 export const fetchCallRecordingUrl = async ({
   connectionId,

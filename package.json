@@ -16,6 +16,7 @@
   "dependencies": {
     "@callstack/react-native-brownfield": "^1.2.0",
     "fuse.js": "^7.1.0",
+    "@react-native-clipboard/clipboard": "^1.16.3",
     "react": "19.1.0",
     "react-native": "0.80.1",
     "react-native-audio-recorder-player": "^3.5.3",

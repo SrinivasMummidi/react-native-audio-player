@@ -7,28 +7,51 @@ import InfoIcon from '../../assets/icons/information.svg';
 type Props = {
   onCopyPress?: () => void;
   onTargetPress?: () => void;
+  showTarget?: boolean;
+  targetActive?: boolean;
 };
 
 export const CallPanelFooter: React.FC<Props> = ({
   onCopyPress,
   onTargetPress,
+  showTarget = true,
+  targetActive = false,
 }) => {
+  const [copyActive, setCopyActive] = React.useState(false);
+
+  const handleCopy = () => {
+    setCopyActive(true);
+    try {
+      onCopyPress?.();
+    } finally {
+      setTimeout(() => setCopyActive(false), 100);
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.leftGroup}>
         <TouchableOpacity
-          onPress={onCopyPress}
+          onPress={handleCopy}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+          activeOpacity={1}
+          style={[styles.copyButton, copyActive && styles.copyButtonActive]}
         >
           <ClipboardCopyIcon width={18} height={18} />
         </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={onTargetPress}
-          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-        >
-          <TargetIcon width={18} height={18} />
-        </TouchableOpacity>
+        {showTarget && (
+          <TouchableOpacity
+            onPress={onTargetPress}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            activeOpacity={1}
+            style={[
+              styles.targetButton,
+              targetActive && styles.targetButtonActive,
+            ]}
+          >
+            <TargetIcon width={18} height={18} />
+          </TouchableOpacity>
+        )}
       </View>
 
       <View style={styles.rightGroup}>
@@ -48,15 +71,15 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderTopWidth: 1,
     borderTopColor: '#f0f0f0',
-    backgroundColor: '#fff',
-    height: 56,
+    backgroundColor: '#fafafa',
+    height: 45,
     borderBottomRightRadius: 8,
     borderBottomLeftRadius: 8,
   },
   leftGroup: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
+    gap: 8,
     marginRight: 12,
   },
   rightGroup: {
@@ -64,15 +87,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 6,
   },
-  divider: {
-    width: 1,
-    height: 16,
-    backgroundColor: '#E5E7EB',
-    opacity: 1,
+  copyButton: {
+    padding: 8,
+    borderRadius: 50,
+    backgroundColor: 'transparent',
+  },
+  copyButtonActive: {
+    backgroundColor: '#D9D9D9',
   },
   infoText: {
     fontSize: 12,
     color: '#6B7280',
+  },
+  targetButton: {
+    padding: 8,
+    borderRadius: 50,
+    backgroundColor: 'transparent',
+  },
+  targetButtonActive: {
+    backgroundColor: '#D9D9D9',
   },
 });
 

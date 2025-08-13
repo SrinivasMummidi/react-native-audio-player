@@ -6,19 +6,21 @@ import { SearchMatch } from '../../types/types';
  * Converts Fuse.js search results to formatted matches with character positions
  * Based on audio-transcript-player's getFormattedMatches implementation
  */
-export function formatSearchMatches(fuseResults: FuseResult<SearchableWord>[]): SearchMatch[] {
+export function formatSearchMatches(
+  fuseResults: FuseResult<SearchableWord>[],
+): SearchMatch[] {
   const formatted: SearchMatch[] = fuseResults
-    .flatMap((result) => {
+    .flatMap(result => {
       const { segmentIndex, wordIndex } = result.item;
-      
+
       return (
-        result.matches?.flatMap((match) =>
+        result.matches?.flatMap(match =>
           match.indices.map(([start, end]) => ({
             segmentIndex,
             wordIndex,
             start,
             end,
-          }))
+          })),
         ) || []
       );
     })
@@ -36,7 +38,7 @@ export function formatSearchMatches(fuseResults: FuseResult<SearchableWord>[]): 
       }
 
       const prev = acc[acc.length - 1];
-      
+
       // Check if this match is in the same word and overlaps with the previous
       if (
         curr.segmentIndex === prev.segmentIndex &&
@@ -58,7 +60,10 @@ export function formatSearchMatches(fuseResults: FuseResult<SearchableWord>[]): 
 /**
  * Finds the next match index in a circular manner
  */
-export function getNextMatchIndex(currentIndex: number, totalMatches: number): number {
+export function getNextMatchIndex(
+  currentIndex: number,
+  totalMatches: number,
+): number {
   if (totalMatches === 0) return -1;
   return (currentIndex + 1) % totalMatches;
 }
@@ -66,7 +71,10 @@ export function getNextMatchIndex(currentIndex: number, totalMatches: number): n
 /**
  * Finds the previous match index in a circular manner
  */
-export function getPreviousMatchIndex(currentIndex: number, totalMatches: number): number {
+export function getPreviousMatchIndex(
+  currentIndex: number,
+  totalMatches: number,
+): number {
   if (totalMatches === 0) return -1;
   return currentIndex <= 0 ? totalMatches - 1 : currentIndex - 1;
 }

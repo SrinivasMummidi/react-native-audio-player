@@ -25,31 +25,46 @@ export const useTranscriptSearch = () => {
   }, [searchState.currentMatchIndex, searchState.matches]);
 
   // Check if a specific word should be highlighted
-  const isWordHighlighted = useCallback((segmentIndex: number, wordIndex: number) => {
-    return searchState.matches.some(match => 
-      match.segmentIndex === segmentIndex && match.wordIndex === wordIndex
-    );
-  }, [searchState.matches]);
+  const isWordHighlighted = useCallback(
+    (segmentIndex: number, wordIndex: number) => {
+      return searchState.matches.some(
+        match =>
+          match.segmentIndex === segmentIndex && match.wordIndex === wordIndex,
+      );
+    },
+    [searchState.matches],
+  );
 
   // Check if a specific word is the current match
-  const isCurrentMatch = useCallback((segmentIndex: number, wordIndex: number) => {
-    const currentMatch = getCurrentMatch();
-    return currentMatch ? 
-      currentMatch.segmentIndex === segmentIndex && currentMatch.wordIndex === wordIndex : 
-      false;
-  }, [getCurrentMatch]);
+  const isCurrentMatch = useCallback(
+    (segmentIndex: number, wordIndex: number) => {
+      const currentMatch = getCurrentMatch();
+      return currentMatch
+        ? currentMatch.segmentIndex === segmentIndex &&
+            currentMatch.wordIndex === wordIndex
+        : false;
+    },
+    [getCurrentMatch],
+  );
 
   // Get all matches for a specific word
-  const getWordMatches = useCallback((segmentIndex: number, wordIndex: number) => {
-    return searchState.matches.filter(match => 
-      match.segmentIndex === segmentIndex && match.wordIndex === wordIndex
-    );
-  }, [searchState.matches]);
+  const getWordMatches = useCallback(
+    (segmentIndex: number, wordIndex: number) => {
+      return searchState.matches.filter(
+        match =>
+          match.segmentIndex === segmentIndex && match.wordIndex === wordIndex,
+      );
+    },
+    [searchState.matches],
+  );
 
   // Search with debouncing (can be extended)
-  const performSearch = useCallback((term: string) => {
-    search(term);
-  }, [search]);
+  const performSearch = useCallback(
+    (term: string) => {
+      search(term);
+    },
+    [search],
+  );
 
   return {
     // Search state
@@ -58,20 +73,20 @@ export const useTranscriptSearch = () => {
     currentMatchIndex: searchState.currentMatchIndex,
     isSearching: searchState.isSearching,
     hasResults: searchState.matches.length > 0,
-    
+
     // Actions
     search: performSearch,
     clearSearch,
     nextMatch,
     previousMatch,
     jumpToMatch,
-    
+
     // Utilities
     getCurrentMatch,
     isWordHighlighted,
     isCurrentMatch,
     getWordMatches,
-    
+
     // Auto-scroll control
     shouldAutoScroll,
     setShouldAutoScroll,

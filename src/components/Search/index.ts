@@ -12,4 +12,8 @@ export { createTranscriptMatcher } from '../../lib/search/fuzzySearch';
 export { formatSearchMatches } from '../../lib/search/formatMatches';
 
 // Types
-export type { SearchMatch, SearchState, SearchContextType } from '../../types/types';
+export type {
+  SearchMatch,
+  SearchState,
+  SearchContextType,
+} from '../../types/types';

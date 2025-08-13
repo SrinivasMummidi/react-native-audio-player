@@ -1,5 +1,10 @@
 // Environment types
-export type AppEnv = 'dev-preview' | 'development' | 'staging' | 'beta' | 'live';
+export type AppEnv =
+  | 'dev-preview'
+  | 'development'
+  | 'staging'
+  | 'beta'
+  | 'live';
 
 // Transcript related types
 export interface Word {
@@ -55,7 +60,7 @@ export interface SearchMatch {
   segmentIndex: number;
   wordIndex: number;
   start: number; // Character start position in word text
-  end: number;   // Character end position in word text
+  end: number; // Character end position in word text
 }
 
 export interface SearchState {
@@ -68,14 +73,14 @@ export interface SearchState {
 export interface SearchContextType {
   // State
   searchState: SearchState;
-  
+
   // Actions
   search: (term: string) => void;
   clearSearch: () => void;
   nextMatch: () => void;
   previousMatch: () => void;
   jumpToMatch: (index: number) => void;
-  
+
   // UI Control
   shouldAutoScroll: boolean;
   setShouldAutoScroll: (value: boolean) => void;
