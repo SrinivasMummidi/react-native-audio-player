@@ -8,20 +8,20 @@ import {
   ToastAndroid,
 } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import CallRecordingPanel from './src/components/CallRecording/CallRecordingPanel';
 import SummarizeButton from './src/components/CallRecording/SummarizeButton';
 import { AudioPlayerProvider, AudioPlayerContent } from './src/components/AudioPlayer';
+import { AudioPlayerProvider as TranscriptAudioPlayerProvider } from './src/context/TranscriptAudioPlayerContext';
+import Insights from './src/components/Transcript/Insights';
 import { fetchCallRecordingUrl } from './src/services/fetch-call-recording';
-import { INSIGHTS_URL_LIVE, INSIGHTS_URL_STAGING } from './src/lib/constants';
-
-type AppEnv = 'development' | 'staging' | 'production' | 'dev-preview';
+import { AppEnv } from './src/lib/environment';
+import { BRANDIDS } from './src/lib/constants';
 
 type AppProps = {
   // Core config (match audio-transcript-player)
   connectionId: string;
   brandId?: string;
   uniquePin?: string;
-  mode?: AppEnv; // 'production' | 'staging' | 'development' | 'dev-preview'
+  mode?: AppEnv; // 'dev-preview' | 'development' | 'staging' | 'beta' | 'live'
   messageSavedTime?: number;
   callRecApiKey?: string; // used in development/dev-preview
 
@@ -32,9 +32,9 @@ type AppProps = {
 export default function App({
   accessToken,
   connectionId,
-  brandId,
+  brandId = BRANDIDS.ANSWER_CONNECT,
   uniquePin,
-  mode = 'production',
+  mode = 'live',
   messageSavedTime,
   callRecApiKey,
 }: AppProps) {
@@ -42,10 +42,6 @@ export default function App({
     async () => accessToken,
     [accessToken],
   );
-  const insightsBaseUrl =
-    mode === 'production' || mode === 'dev-preview'
-      ? INSIGHTS_URL_LIVE
-      : INSIGHTS_URL_STAGING;
 
   const [audioUrl, setAudioUrl] = React.useState<string | undefined>(undefined);
   const [, setError] = React.useState<string | null>(null);
@@ -68,6 +64,7 @@ export default function App({
         if (!mounted) return;
         setAudioUrl(res.data);
       } catch (e: any) {
+        console.log("Error fetching audio URL:", e);
         if (!mounted) return;
         setError(e?.message ?? 'Failed to fetch recording');
       }
@@ -104,35 +101,32 @@ export default function App({
             defaultAudioUrl={audioUrl}
             onError={handleAudioError}
           >
-            <View style={styles.section}>
-              <AudioPlayerContent
-                showPlaybackSpeed
-                primaryColor="#111827"
-                backgroundColor="#ffffff"
-                borderColor="#e5e7eb"
-                textColor="#111827"
-                showTotalTime={true}
-                sourceLoading={!audioUrl}
-                showErrorText={false}
-              />
-            </View>
-            <View style={styles.section}>
+            <TranscriptAudioPlayerProvider
+              connectionId={connectionId}
+              brandId={brandId}
+              getAccessToken={getAccessToken}
+              uniquePin={uniquePin}
+              mode={mode}
+              callRecApiKey={callRecApiKey}
+              messageSavedTime={messageSavedTime}
+              audioSrc={audioUrl}
+            >
+              <View style={styles.playerContainer}>
+                <AudioPlayerContent
+                  showPlaybackSpeed
+                  showTotalTime={true}
+                  sourceLoading={!audioUrl}
+                  showErrorText={false}
+                />
+              </View>
               <SummarizeButton
                 onPress={handleSummaryToggle}
                 isLoading={isSummaryLoading}
               />
-            </View>
-            {showSummaryPanel && (
-              <View style={styles.section}>
-                <CallRecordingPanel
-                  connectionId={connectionId}
-                  getAccessToken={getAccessToken}
-                  insightsBaseUrl={insightsBaseUrl}
-                  isVisible={showSummaryPanel}
-                  autoFetchOnShow={true}
-                />
-              </View>
-            )}
+              {showSummaryPanel && (
+                <Insights />
+              )}
+            </TranscriptAudioPlayerProvider>
           </AudioPlayerProvider>
         </View>
       </SafeAreaView>
@@ -148,8 +142,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    padding: 16,
-    gap: 24,
+    margin: 10,
+    backgroundColor: '#ffffff',
+  },
+  playerContainer: {
+    marginBottom: 8,
   },
   title: {
     fontSize: 24,

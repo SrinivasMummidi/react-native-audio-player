@@ -1,5 +1,5 @@
 import { INBOUND_BASE_URLS_LIVE, INBOUND_BASE_URLS_STAGING } from '../lib/constants';
-import type { AppEnv } from '../lib/constants';
+import type { AppEnv } from '../lib/environment';
 
 export type CallRecordingParams = {
   connectionId: string;
@@ -26,7 +26,7 @@ export const fetchCallRecordingUrl = async ({
   callRecApiKey,
   messageSavedTime,
 }: CallRecordingParams): Promise<CallRecordingResponse> => {
-  const isProd = mode === 'production' || mode === 'dev-preview';
+  const isProd = mode === 'live' || mode === 'dev-preview';
   const isStaging = mode === 'staging';
 
   if (isProd || isStaging) {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
 import { useAudioPlayer } from './AudioPlayerContext';
 
 interface PlaybackSpeedSelectorProps {
@@ -13,16 +13,29 @@ interface PlaybackSpeedSelectorProps {
 }
 
 export const PlaybackSpeedSelector: React.FC<PlaybackSpeedSelectorProps> = ({
-  textColor = '#111827',
+  textColor = '#666',
   backgroundColor = 'transparent',
-  borderColor = '#d1d5db',
+  borderColor = 'transparent',
   fontSize = 12,
   paddingHorizontal = 8,
   paddingVertical = 4,
-  borderRadius = 4,
+  borderRadius = 6,
 }) => {
-  const { playbackSpeed, cyclePlaybackSpeed } = useAudioPlayer();
-  
+  const { playbackSpeed, setPlaybackSpeed } = useAudioPlayer();
+
+  const handlePress = () => {
+    Alert.alert(
+      'Playback Speed',
+      '',
+      [
+        { text: '0.5x', onPress: () => { setPlaybackSpeed({ id: '0.5', value: 0.5, label: '0.5x' }); } },
+        { text: '1x', onPress: () => { setPlaybackSpeed({ id: '1', value: 1, label: '1x' }); } },
+        { text: '1.5x', onPress: () => { setPlaybackSpeed({ id: '1.5', value: 1.5, label: '1.5x' }); } },
+        { text: '2x', onPress: () => { setPlaybackSpeed({ id: '2', value: 2, label: '2x' }); } },
+      ]
+    );
+  };
+
   return (
     <TouchableOpacity
       style={[
@@ -35,7 +48,7 @@ export const PlaybackSpeedSelector: React.FC<PlaybackSpeedSelectorProps> = ({
           borderRadius,
         },
       ]}
-      onPress={cyclePlaybackSpeed}
+      onPress={handlePress}
       activeOpacity={0.7}
     >
       <Text
@@ -57,14 +70,14 @@ export const PlaybackSpeedSelector: React.FC<PlaybackSpeedSelectorProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    borderWidth: 1,
+    borderRadius: 6,
     justifyContent: 'center',
     alignItems: 'center',
-    minWidth: 32,
-  alignSelf: 'center',
+    minWidth: 26,
   },
   text: {
-    fontWeight: '500',
+    fontSize: 12,
+    color: '#666',
     fontVariant: ['tabular-nums'],
   },
   verticalAlignText: {

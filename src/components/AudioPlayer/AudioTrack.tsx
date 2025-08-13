@@ -14,10 +14,10 @@ interface AudioTrackProps {
 }
 
 export const AudioTrack: React.FC<AudioTrackProps> = ({
-  height = 2,
-  trackColor = '#e5e7eb',
-  progressColor = '#3b82f6',
-  thumbColor = '#3b82f6',
+  height = 3,
+  trackColor = '#ddd',
+  progressColor = '#111',
+  thumbColor = '#111',
   containerStyle,
 }) => {
   const { currentPosition, totalDuration, seekTo, isReady } =
@@ -56,19 +56,18 @@ export const AudioTrack: React.FC<AudioTrackProps> = ({
         progress={progress}
         minimumValue={min}
         maximumValue={max}
-        thumbWidth={10}
+        thumbWidth={12}
         renderBubble={() => null}
         theme={{
           disableMinTrackTintColor: trackColor,
           maximumTrackTintColor: trackColor,
-          minimumTrackTintColor: progressColor,
-          cacheTrackTintColor: trackColor,
+          minimumTrackTintColor: '#111',
           bubbleBackgroundColor: progressColor,
           heartbeatColor: thumbColor,
         }}
         onSlidingComplete={handleValueChange}
-  containerStyle={[styles.sliderContainer, { height: Math.max(6, height + 4) }]}
-  disable={!isReady || totalDuration === 0}
+        containerStyle={[styles.sliderContainer, { height: Math.max(6, height + 4) }]}
+        disable={!isReady || totalDuration === 0}
       />
     </View>
   );
@@ -83,7 +82,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sliderContainer: {
-  justifyContent: 'center',
-    borderRadius: 3,
+    justifyContent: 'center',
+    height: 3,
+    borderRadius: 2,
+  },
+  trackPlaceholder: {
+    backgroundColor: '#ddd',
+    borderRadius: 2,
+    marginHorizontal: 8,
   },
 });

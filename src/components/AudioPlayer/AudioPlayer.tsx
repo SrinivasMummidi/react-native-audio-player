@@ -57,67 +57,67 @@ export const AudioPlayerContent: React.FC<
   showTotalTime = false,
   sourceLoading = false,
 }) => {
-  const { error, currentPosition, totalDuration, isReady } = useAudioPlayer();
+    const { error, currentPosition, totalDuration, isReady } = useAudioPlayer();
 
-  return (
-    <View
-      style={[
-        styles.container,
-        {
-          backgroundColor,
-          borderColor,
-          borderRadius,
-          paddingHorizontal: padding,
-          paddingVertical: padding * 0.8,
-          height,
-        },
-        containerStyle,
-      ]}
-    >
-      <View style={styles.controlsRow}>
-        <PlayButton
-          size={playButtonSize}
-          iconSize={playButtonSize * 1.4}
-          color={textColor}
-          loadingColor={primaryColor}
-          forceLoading={!isReady || sourceLoading}
-          disabled={!isReady}
-        />
-
-        <View style={styles.trackContainer}>
-          <AudioTrack
-            height={2}
-            trackColor={borderColor}
-            progressColor={primaryColor}
-            thumbColor={primaryColor}
-            containerStyle={styles.trackInner}
+    return (
+      <View
+        style={[
+          styles.container,
+          {
+            backgroundColor,
+            borderColor,
+            borderRadius,
+            paddingHorizontal: padding,
+            paddingVertical: padding * 0.8,
+            height,
+          },
+          containerStyle,
+        ]}
+      >
+        <View style={styles.controlsRow}>
+          <PlayButton
+            size={playButtonSize}
+            iconSize={playButtonSize * 1.4}
+            color={textColor}
+            loadingColor={primaryColor}
+            forceLoading={!isReady || sourceLoading}
+            disabled={!isReady}
           />
+
+          <View style={styles.trackContainer}>
+            <AudioTrack
+              height={2}
+              trackColor={borderColor}
+              progressColor={primaryColor}
+              thumbColor={primaryColor}
+              containerStyle={styles.trackInner}
+            />
+          </View>
+
+          {showTotalTime && (
+            <Text style={[styles.timeText, { color: secondaryColor }]}>
+              {formatTime(
+                Math.floor(Math.max(0, totalDuration - currentPosition) / 1000),
+              )}
+            </Text>
+          )}
+
+          {showPlaybackSpeed && (
+            <PlaybackSpeedSelector
+              textColor={textColor}
+              backgroundColor="transparent"
+              borderColor="transparent"
+              fontSize={14}
+              paddingHorizontal={8}
+              paddingVertical={4}
+            />
+          )}
         </View>
 
-        {showTotalTime && (
-          <Text style={[styles.timeText, { color: secondaryColor }]}>
-            {formatTime(
-              Math.floor(Math.max(0, totalDuration - currentPosition) / 1000),
-            )}
-          </Text>
-        )}
-
-        {showPlaybackSpeed && (
-          <PlaybackSpeedSelector
-            textColor={textColor}
-            backgroundColor="transparent"
-            borderColor="transparent"
-            fontSize={14}
-            paddingHorizontal={8}
-            paddingVertical={4}
-          />
-        )}
+        {showErrorText && error && <Text style={styles.errorText}>{error}</Text>}
       </View>
-
-      {showErrorText && error && <Text style={styles.errorText}>{error}</Text>}
-    </View>
-  );
-};
+    );
+  };
 
 export const AudioPlayer: React.FC<AudioPlayerProps> = ({
   audioUrl,
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     fontVariant: ['tabular-nums'],
     minWidth: 35,
     textAlign: 'center',
-  textAlignVertical: 'center',
+    textAlignVertical: 'center',
   },
   trackContainer: {
     flex: 1,

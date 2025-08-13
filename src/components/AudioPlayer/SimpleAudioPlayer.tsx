@@ -15,28 +15,28 @@ interface SimpleAudioPlayerProps {
 
 const PlayIcon = () => (
   <Svg width={16} height={16} viewBox="0 0 24 24" fill="none">
-    <Path d="M8 5v14l11-7-11-7Z" fill="#111827" />
+    <Path d="M8 5v14l11-7-11-7Z" fill="#676767" />
   </Svg>
 );
 
 const PauseIcon = () => (
   <Svg width={16} height={16} viewBox="0 0 24 24" fill="none">
-    <Path d="M7 5h4v14H7zM13 5h4v14h-4z" fill="#111827" />
+    <Path d="M7 5h4v14H7zM13 5h4v14h-4z" fill="#676767" />
   </Svg>
 );
 
 const VolumeOnIcon = () => (
   <Svg width={16} height={16} viewBox="0 0 24 24" fill="none">
-    <Path d="M3 10v4h4l5 4V6L7 10H3Z" fill="#111827" />
-    <Path d="M16.5 8.5c1 .9 1.5 2 1.5 3.5s-.5 2.6-1.5 3.5" stroke="#111827" strokeWidth="2" strokeLinecap="round"/>
-    <Path d="M19.5 6c1.8 1.6 2.5 3.4 2.5 6s-.7 4.4-2.5 6" stroke="#111827" strokeWidth="2" strokeLinecap="round"/>
+    <Path d="M3 10v4h4l5 4V6L7 10H3Z" fill="#676767" />
+    <Path d="M16.5 8.5c1 .9 1.5 2 1.5 3.5s-.5 2.6-1.5 3.5" stroke="#676767" strokeWidth="2" strokeLinecap="round" />
+    <Path d="M19.5 6c1.8 1.6 2.5 3.4 2.5 6s-.7 4.4-2.5 6" stroke="#676767" strokeWidth="2" strokeLinecap="round" />
   </Svg>
 );
 
 const VolumeOffIcon = () => (
   <Svg width={16} height={16} viewBox="0 0 24 24" fill="none">
-    <Path d="M3 10v4h4l5 4V6L7 10H3Z" fill="#111827" />
-    <Path d="M22 8l-6 6M16 8l6 6" stroke="#111827" strokeWidth="2" strokeLinecap="round"/>
+    <Path d="M3 10v4h4l5 4V6L7 10H3Z" fill="#676767" />
+    <Path d="M22 8l-6 6M16 8l6 6" stroke="#676767" strokeWidth="2" strokeLinecap="round" />
   </Svg>
 );
 
@@ -68,10 +68,10 @@ export default function SimpleAudioPlayer({ audioUrl }: SimpleAudioPlayerProps) 
       try {
         await player.stopPlayer();
         player.removePlayBackListener();
-      } catch {}
+      } catch { }
 
       // attach listener
-  player.addPlayBackListener((e: PlayBackType) => {
+      player.addPlayBackListener((e: PlayBackType) => {
         const targetDuration = e.duration > 0 ? Math.min(e.duration, MAX_PREVIEW_MS) : MAX_PREVIEW_MS;
         setTotalDuration(targetDuration);
 
@@ -87,29 +87,33 @@ export default function SimpleAudioPlayer({ audioUrl }: SimpleAudioPlayerProps) 
         if (targetDuration > 0 && e.currentPosition >= targetDuration) {
           setIsPlaying(false);
           progress.value = 0;
-          player.stopPlayer().catch(() => {});
+          player.stopPlayer().catch(() => { });
           player.removePlayBackListener();
         }
       });
 
       await player.startPlayer(url);
       // Apply current volume and rate if available
-      try { await player.setVolume(isMuted ? 0 : 1); } catch {}
+      try { await player.setVolume(isMuted ? 0 : 1); } catch { }
       try {
         // Try multiple method names across platforms/versions
         // @ts-ignore
         if (player.setRate) { // @ts-ignore
-          await player.setRate(rate); }
+          await player.setRate(rate);
+        }
         // @ts-ignore
         else if (player.setPlaybackRate) { // @ts-ignore
-          await player.setPlaybackRate(rate); }
+          await player.setPlaybackRate(rate);
+        }
         // @ts-ignore
         else if (player.setSpeed) { // @ts-ignore
-          await player.setSpeed(rate); }
+          await player.setSpeed(rate);
+        }
         // @ts-ignore
         else if (player.setPlaybackSpeed) { // @ts-ignore
-          await player.setPlaybackSpeed(rate); }
-      } catch {}
+          await player.setPlaybackSpeed(rate);
+        }
+      } catch { }
       setIsPlaying(true);
       setIsLoading(false); // flip spinner off immediately after start
       setIsBuffering(false);
@@ -118,39 +122,39 @@ export default function SimpleAudioPlayer({ audioUrl }: SimpleAudioPlayerProps) 
     } finally {
       // keep no-op: isLoading already set false right after start
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
   }, [url, isBuffering, progress, isMuted, rate]);
 
   const onPausePlay = useCallback(async () => {
     try {
-  await player.pausePlayer();
+      await player.pausePlayer();
       setIsPlaying(false);
     } catch (e) {
       console.error('pause failed', e);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
   }, []);
 
   const onResumePlay = useCallback(async () => {
     try {
-  await player.resumePlayer();
+      await player.resumePlayer();
       setIsPlaying(true);
     } catch (e) {
       console.error('resume failed', e);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
   }, []);
 
   const onSeek = useCallback(async (value: number) => {
     if (totalDuration > 0) {
       const seekTime = (value / 100) * totalDuration;
       try {
-  await player.seekToPlayer(seekTime);
+        await player.seekToPlayer(seekTime);
       } catch (e) {
         console.error('seek failed', e);
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
   }, [totalDuration]);
 
   const handlePlayPause = useCallback(() => {
@@ -168,8 +172,8 @@ export default function SimpleAudioPlayer({ audioUrl }: SimpleAudioPlayerProps) 
   const toggleMute = useCallback(async () => {
     const next = !isMuted;
     setIsMuted(next);
-  try { await player.setVolume(next ? 0 : 1); } catch {}
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
+    try { await player.setVolume(next ? 0 : 1); } catch { }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
   }, [isMuted]);
 
   const cycleRate = useCallback(async () => {
@@ -182,16 +186,16 @@ export default function SimpleAudioPlayer({ audioUrl }: SimpleAudioPlayerProps) 
       if (player.setRate) { // @ts-ignore
         await player.setRate(next);
       }
-    } catch {}
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
+    } catch { }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
   }, [rate]);
 
   useEffect(() => {
     return () => {
-      player.stopPlayer().catch(() => {});
+      player.stopPlayer().catch(() => { });
       player.removePlayBackListener();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
   }, []);
 
   return (
@@ -214,7 +218,7 @@ export default function SimpleAudioPlayer({ audioUrl }: SimpleAudioPlayerProps) 
           maximumValue={max}
           thumbWidth={12}
           onSlidingComplete={onSeek}
-          theme={{ maximumTrackTintColor: '#E5E7EB', minimumTrackTintColor: '#111827', cacheTrackTintColor: '#D1D5DB' }}
+          theme={{ maximumTrackTintColor: '#ddd', minimumTrackTintColor: '#111', cacheTrackTintColor: '#D1D5DB' }}
         />
       </View>
 
@@ -238,13 +242,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     paddingHorizontal: 12,
     paddingVertical: 8,
-    borderRadius: 999,
+    borderRadius: 25,
     gap: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 6,
     elevation: 2,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
   },
   playButton: {
     width: 28,
@@ -268,6 +274,6 @@ const styles = StyleSheet.create({
   },
   smallText: {
     fontSize: 12,
-    color: '#111827',
+    color: '#666',
   },
 });

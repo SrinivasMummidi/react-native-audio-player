@@ -13,7 +13,7 @@ interface SummarizeButtonProps {
   disabled?: boolean;
 }
 
-const SparkleIcon = ({ size = 18, color = '#111827' }) => (
+const SparkleIcon = ({ size = 18, color = '#676767' }) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
     <Path
       d="M12 2l1.8 7.2L21 11.9l-7.2 1.8L12 21l-1.8-7.2L3 11.9l7.2-1.7L12 2z"
@@ -51,14 +51,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: '#F3F4F6',
-    borderRadius: 999,
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+    borderRadius: 25,
     paddingVertical: 10,
+    paddingHorizontal: 10,
+    marginBottom: 6,
   },
   summariseText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#111827',
+    color: '#333',
   },
   newBadge: {
     marginLeft: 6,

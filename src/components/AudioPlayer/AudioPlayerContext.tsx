@@ -153,7 +153,7 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
         currentPosition < totalDuration;
       if (canResume) {
         // Resume existing playback session without tearing down listeners
-        await player.setVolume(isMuted ? 0 : volume / 100).catch(() => {});
+        await player.setVolume(isMuted ? 0 : volume / 100).catch(() => { });
         await player.resumePlayer();
         await applyPlaybackSpeedToPlayer(playbackSpeed.value);
         setIsPlaying(true);
@@ -184,7 +184,7 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
         if (e.duration > 0 && e.currentPosition >= e.duration) {
           setIsPlaying(false);
           setCurrentPosition(0);
-          player.stopPlayer().catch(() => {});
+          player.stopPlayer().catch(() => { });
           player.removePlayBackListener();
         }
       });
@@ -294,7 +294,7 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     return () => {
       if (!isCleanedUpRef.current) {
         isCleanedUpRef.current = true;
-        player.stopPlayer().catch(() => {});
+        player.stopPlayer().catch(() => { });
         player.removePlayBackListener();
       }
     };
@@ -311,7 +311,7 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
         try {
           await player.stopPlayer();
           player.removePlayBackListener();
-        } catch {}
+        } catch { }
 
         const listener = (e: PlayBackType) => {
           if (e.duration && e.duration > 0 && !gotDuration) {
@@ -319,7 +319,7 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
             setTotalDuration(e.duration);
             setCurrentPosition(0);
             setIsReady(true);
-            player.stopPlayer().catch(() => {});
+            player.stopPlayer().catch(() => { });
             player.removePlayBackListener();
           }
         };
@@ -329,7 +329,7 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
         // Mute during probe to avoid audible blip
         try {
           await player.setVolume(0);
-        } catch {}
+        } catch { }
       } catch (err) {
         // Leave isReady as-is; play() can still establish duration
       }
@@ -337,14 +337,13 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     [player, totalDuration, isReady],
   );
 
-  // Sync incoming defaultAudioUrl prop to internal state; stop current playback if URL changes
   useEffect(() => {
     // Allow clearing URL too
     const nextUrl = defaultAudioUrl ?? null;
     if (nextUrl !== audioUrl) {
       // Stop any ongoing playback before switching URL
       if (isPlaying) {
-        player.stopPlayer().catch(() => {});
+        player.stopPlayer().catch(() => { });
         player.removePlayBackListener();
         setIsPlaying(false);
       }
@@ -359,7 +358,12 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
 
   // Preload current URL to discover duration; no timers, minimal state changes
   useEffect(() => {
-    if (!audioUrl) return;
+    if (!audioUrl) {
+      setIsReady(false);
+      setIsLoading(false);
+      setTotalDuration(0);
+      return;
+    }
     if (isReady || totalDuration > 0) return;
     probeDuration(audioUrl);
     // eslint-disable-next-line react-hooks/exhaustive-deps

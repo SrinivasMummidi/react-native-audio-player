@@ -32,21 +32,21 @@ export const PlayButton: React.FC<PlayButtonProps> = ({
   disabled = false,
   forceLoading = false,
 }) => {
-  const { isPlaying, isLoading, isBuffering, play, pause, audioUrl } = useAudioPlayer();
-  
+  const { isPlaying, isLoading, isBuffering, play, pause, audioUrl, isReady } = useAudioPlayer();
+
   const handlePress = async () => {
     if (disabled || isLoading) return;
-    
+
     if (isPlaying) {
       await pause();
     } else {
       await play();
     }
   };
-  
+
   const noUrl = !audioUrl;
   const showLoading = forceLoading || ((isLoading || isBuffering) && !noUrl);
-  
+
   return (
     <TouchableOpacity
       style={[
@@ -59,10 +59,10 @@ export const PlayButton: React.FC<PlayButtonProps> = ({
         disabled && styles.disabled,
       ]}
       onPress={handlePress}
-  disabled={disabled || isLoading || noUrl}
+      disabled={disabled || isLoading || noUrl || !isReady}
       activeOpacity={0.7}
     >
-  {showLoading ? (
+      {showLoading ? (
         <ActivityIndicator size="small" color={loadingColor} />
       ) : isPlaying ? (
         <PauseIcon size={iconSize} color={color} />
@@ -75,10 +75,10 @@ export const PlayButton: React.FC<PlayButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-  justifyContent: 'center',
-  alignItems: 'center',
-  backgroundColor: 'transparent',
-  alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    alignSelf: 'center',
   },
   disabled: {
     opacity: 0.5,
