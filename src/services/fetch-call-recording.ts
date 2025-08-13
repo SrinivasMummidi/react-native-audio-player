@@ -1,5 +1,5 @@
 import { INBOUND_BASE_URLS_LIVE, INBOUND_BASE_URLS_STAGING } from '../lib/constants';
-import type { AppEnv } from '../lib/environment';
+import { type AppEnv, getEnvironment, isEnvironment, isProduction } from '../lib/environment';
 
 export type CallRecordingParams = {
   connectionId: string;
@@ -26,13 +26,12 @@ export const fetchCallRecordingUrl = async ({
   callRecApiKey,
   messageSavedTime,
 }: CallRecordingParams): Promise<CallRecordingResponse> => {
-  const isProd = mode === 'live' || mode === 'dev-preview';
-  const isStaging = mode === 'staging';
-
-  if (isProd || isStaging) {
+  if (isProduction(mode) || getEnvironment(mode) === 'staging') {
     if (!brandId) throw new Error('Missing required parameter brandId');
     const accessToken = await getAccessToken();
-    const baseURL = isProd ? INBOUND_BASE_URLS_LIVE[brandId] : INBOUND_BASE_URLS_STAGING[brandId];
+    const baseURL = isProduction(mode)
+      ? INBOUND_BASE_URLS_LIVE[brandId]
+      : INBOUND_BASE_URLS_STAGING[brandId];
     const url = `${baseURL}/v3/services/aws/getCallRecording/connectionId/${connectionId}?uniquePin=${uniquePin ?? ''}&messageSavedTime=${messageSavedTime ?? ''}`;
     const response = await fetch(url, {
       method: 'GET',
@@ -46,7 +45,7 @@ export const fetchCallRecordingUrl = async ({
     return data as CallRecordingResponse;
   }
 
-  if (mode === 'development') {
+  if (isEnvironment(mode, 'development') || isEnvironment(mode, 'dev-preview')) {
     if (!callRecApiKey) throw new Error('Missing required param callRecApiKey');
     const response = await fetch('https://oa706f8gc6.execute-api.us-east-1.amazonaws.com/prod/getrecording', {
       method: 'POST',
