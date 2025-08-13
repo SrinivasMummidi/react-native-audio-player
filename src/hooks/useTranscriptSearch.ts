@@ -12,8 +12,6 @@ export const useTranscriptSearch = () => {
     nextMatch,
     previousMatch,
     jumpToMatch,
-    shouldAutoScroll,
-    setShouldAutoScroll,
   } = useSearch();
 
   // Get current highlighted match for display
@@ -86,9 +84,5 @@ export const useTranscriptSearch = () => {
     isWordHighlighted,
     isCurrentMatch,
     getWordMatches,
-
-    // Auto-scroll control
-    shouldAutoScroll,
-    setShouldAutoScroll,
   };
 };

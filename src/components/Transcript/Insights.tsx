@@ -15,6 +15,7 @@ import TranscriptView from './TranscriptView';
 import CallPanelFooter from '../CallRecording/CallPanelFooter';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { LoadingSpinner } from '../common/LoadingSpinner';
+import { useAutoScroll } from '../../context/AutoScrollContext';
 
 function Insights() {
   const [activeTab, setActiveTab] = useState<'summary' | 'transcript' | null>(
@@ -24,7 +25,7 @@ function Insights() {
     null,
   );
   const { getAccessToken, connectionId } = useAudioPlayerContext();
-  const [autoSync, setAutoSync] = useState<boolean>(true);
+  const { autoSync, setAutoSync } = useAutoScroll();
 
   const transcriptPlainText = useMemo(() => {
     if (!transcriptData) return '';
@@ -138,7 +139,6 @@ function Insights() {
               <TranscriptView
                 words={transcriptData.data.transcript.data.words}
                 speakerLabels={transcriptData.data.transcript.speakerLabels}
-                autoScroll={autoSync}
                 onManualScroll={() => setAutoSync(false)}
               />
             </View>

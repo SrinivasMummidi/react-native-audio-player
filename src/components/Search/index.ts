@@ -5,6 +5,7 @@ export { ChevronUpIcon, ChevronDownIcon } from './ChevronIcons';
 
 // Search context and hooks
 export { SearchProvider, useSearch } from '../../context/SearchContext';
+
 export { useTranscriptSearch } from '../../hooks/useTranscriptSearch';
 
 // Search utilities

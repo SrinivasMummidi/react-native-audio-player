@@ -11,7 +11,7 @@ import AudioRecorderPlayer, {
   PlayBackType,
 } from 'react-native-audio-recorder-player';
 import { playbackRates } from './utils';
-
+import { useAutoScroll } from '../../context/AutoScrollContext';
 export interface AudioPlayerContextType {
   // Player instance
   player: AudioRecorderPlayer;
@@ -104,6 +104,7 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [isSliding, setIsSliding] = useState(false);
   const [previewPosition, setPreviewPosition] = useState(0);
+  const { setAutoSync } = useAutoScroll();
 
   // Refs for cleanup
   const isCleanedUpRef = useRef(false);
@@ -258,11 +259,12 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
       try {
         await player.seekToPlayer(position);
         setCurrentPosition(position);
+        setAutoSync(true);
       } catch (err) {
         console.warn('Failed to seek:', err);
       }
     },
-    [player],
+    [player, setAutoSync],
   );
 
   const toggleMute = useCallback(async () => {

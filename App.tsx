@@ -16,8 +16,9 @@ import {
 import { AudioPlayerProvider as TranscriptAudioPlayerProvider } from './src/context/TranscriptAudioPlayerContext';
 import Insights from './src/components/Transcript/Insights';
 import { fetchCallRecordingUrl } from './src/services/fetch-call-recording';
-import { AppEnv } from './src/lib/environment';
 import { BRANDIDS } from './src/lib/constants';
+import { AutoScrollProvider } from './src/context/AutoScrollContext';
+import { AppEnv } from './src/types/types';
 
 type AppProps = {
   // Core config (match audio-transcript-player)
@@ -100,35 +101,37 @@ export default function App({
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaView style={styles.root}>
         <View style={styles.container}>
-          <AudioPlayerProvider
-            defaultAudioUrl={audioUrl}
-            onError={handleAudioError}
-          >
-            <TranscriptAudioPlayerProvider
-              connectionId={connectionId}
-              brandId={brandId}
-              getAccessToken={getAccessToken}
-              uniquePin={uniquePin}
-              mode={mode}
-              callRecApiKey={callRecApiKey}
-              messageSavedTime={messageSavedTime}
-              audioSrc={audioUrl}
+          <AutoScrollProvider>
+            <AudioPlayerProvider
+              defaultAudioUrl={audioUrl}
+              onError={handleAudioError}
             >
-              <View style={styles.playerContainer}>
-                <AudioPlayerContent
-                  showPlaybackSpeed
-                  showTotalTime={true}
-                  sourceLoading={!audioUrl}
-                  showErrorText={false}
+              <TranscriptAudioPlayerProvider
+                connectionId={connectionId}
+                brandId={brandId}
+                getAccessToken={getAccessToken}
+                uniquePin={uniquePin}
+                mode={mode}
+                callRecApiKey={callRecApiKey}
+                messageSavedTime={messageSavedTime}
+                audioSrc={audioUrl}
+              >
+                <View style={styles.playerContainer}>
+                  <AudioPlayerContent
+                    showPlaybackSpeed
+                    showTotalTime={true}
+                    sourceLoading={!audioUrl}
+                    showErrorText={false}
+                  />
+                </View>
+                <SummarizeButton
+                  onPress={handleSummaryToggle}
+                  isLoading={isSummaryLoading}
                 />
-              </View>
-              <SummarizeButton
-                onPress={handleSummaryToggle}
-                isLoading={isSummaryLoading}
-              />
-              {showSummaryPanel && <Insights />}
-            </TranscriptAudioPlayerProvider>
-          </AudioPlayerProvider>
+                {showSummaryPanel && <Insights />}
+              </TranscriptAudioPlayerProvider>
+            </AudioPlayerProvider>
+          </AutoScrollProvider>
         </View>
       </SafeAreaView>
     </GestureHandlerRootView>

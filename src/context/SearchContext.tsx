@@ -16,6 +16,7 @@ import {
   getNextMatchIndex,
   getPreviousMatchIndex,
 } from '../lib/search/formatMatches';
+import { useAutoScroll } from './AutoScrollContext';
 
 interface SearchProviderProps {
   children: ReactNode;
@@ -37,7 +38,7 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
 }) => {
   const [searchState, setSearchState] =
     useState<SearchState>(initialSearchState);
-  const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
+  const { setAutoSync } = useAutoScroll();
 
   const search = useCallback(
     (term: string) => {
@@ -62,7 +63,7 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
 
         // Disable auto-scroll when search is performed
         if (matches.length > 0) {
-          setShouldAutoScroll(false);
+          setAutoSync(false);
         }
       } catch (error) {
         console.error('Search error:', error);
@@ -79,8 +80,8 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
 
   const clearSearch = useCallback(() => {
     setSearchState(initialSearchState);
-    setShouldAutoScroll(true);
-  }, []);
+    setAutoSync(true);
+  }, [setAutoSync]);
 
   const nextMatch = useCallback(() => {
     setSearchState(prev => {
@@ -88,13 +89,13 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
         prev.currentMatchIndex,
         prev.matches.length,
       );
-      setShouldAutoScroll(false);
+      setAutoSync(false);
       return {
         ...prev,
         currentMatchIndex: newIndex,
       };
     });
-  }, []);
+  }, [setAutoSync]);
 
   const previousMatch = useCallback(() => {
     setSearchState(prev => {
@@ -102,26 +103,29 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
         prev.currentMatchIndex,
         prev.matches.length,
       );
-      setShouldAutoScroll(false);
+      setAutoSync(false);
       return {
         ...prev,
         currentMatchIndex: newIndex,
       };
     });
-  }, []);
+  }, [setAutoSync]);
 
-  const jumpToMatch = useCallback((index: number) => {
-    setSearchState(prev => {
-      if (index >= 0 && index < prev.matches.length) {
-        setShouldAutoScroll(false);
-        return {
-          ...prev,
-          currentMatchIndex: index,
-        };
-      }
-      return prev;
-    });
-  }, []);
+  const jumpToMatch = useCallback(
+    (index: number) => {
+      setSearchState(prev => {
+        if (index >= 0 && index < prev.matches.length) {
+          setAutoSync(false);
+          return {
+            ...prev,
+            currentMatchIndex: index,
+          };
+        }
+        return prev;
+      });
+    },
+    [setAutoSync],
+  );
 
   const contextValue: SearchContextType = {
     searchState,
@@ -130,8 +134,6 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({
     nextMatch,
     previousMatch,
     jumpToMatch,
-    shouldAutoScroll,
-    setShouldAutoScroll,
   };
 
   return (

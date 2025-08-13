@@ -80,10 +80,6 @@ export interface SearchContextType {
   nextMatch: () => void;
   previousMatch: () => void;
   jumpToMatch: (index: number) => void;
-
-  // UI Control
-  shouldAutoScroll: boolean;
-  setShouldAutoScroll: (value: boolean) => void;
 }
 
 export interface SearchableWord {

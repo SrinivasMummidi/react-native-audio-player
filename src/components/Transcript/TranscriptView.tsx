@@ -6,19 +6,18 @@ import { formatTranscriptData } from '../../utils/transcriptUtils';
 import { useTranscriptAudio } from '../../hooks/useTranscriptAudio';
 import { useAudioPlayer } from '../AudioPlayer/AudioPlayerContext';
 import { SearchProvider, useSearch } from '../../context/SearchContext';
+import { useAutoScroll } from '../../context/AutoScrollContext';
 import SearchInput from '../Search/SearchInput';
 
 interface TranscriptViewProps {
   words: Word[];
   speakerLabels: SpeakerLabels;
-  autoScroll?: boolean;
   onManualScroll?: () => void;
 }
 
 const TranscriptViewContent: React.FC<TranscriptViewProps> = ({
   words,
   speakerLabels,
-  autoScroll = true,
   onManualScroll,
 }) => {
   const scrollViewRef = useRef<ScrollView>(null);
@@ -26,7 +25,8 @@ const TranscriptViewContent: React.FC<TranscriptViewProps> = ({
 
   const { currentTime, seek } = useTranscriptAudio();
   const { isPlaying } = useAudioPlayer();
-  const { shouldAutoScroll, searchState } = useSearch();
+  const { searchState } = useSearch();
+  const { autoSync } = useAutoScroll();
   const segments = useMemo(() => formatTranscriptData(words), [words]);
 
   // Find active segment based on current audio position
@@ -46,7 +46,7 @@ const TranscriptViewContent: React.FC<TranscriptViewProps> = ({
   }, [segments, currentTime]);
 
   useEffect(() => {
-    if (!shouldAutoScroll || !isPlaying) return;
+    if (!autoSync || !isPlaying) return;
     if (activeSegmentIndex < 0) return;
 
     const segmentPosition = rowPositionsRef.current[activeSegmentIndex];
@@ -54,7 +54,7 @@ const TranscriptViewContent: React.FC<TranscriptViewProps> = ({
       const targetPosition = Math.max(0, segmentPosition - 120);
       scrollViewRef.current?.scrollTo({ y: targetPosition, animated: true });
     }
-  }, [activeSegmentIndex, shouldAutoScroll, isPlaying]);
+  }, [activeSegmentIndex, autoSync, isPlaying]);
 
   // Scroll to current search match
   useEffect(() => {
