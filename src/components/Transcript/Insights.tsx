@@ -4,6 +4,7 @@ import { fetchInsights } from '../../services/fetchInsights';
 import { MockResponseData } from '../../types/transcript';
 import { useAudioPlayerContext } from '../../context/TranscriptAudioPlayerContext';
 import TranscriptView from './TranscriptView';
+import CallPanelFooter from '../CallRecording/CallPanelFooter';
 
 function Insights() {
     const [activeTab, setActiveTab] = useState<'summary' | 'transcript' | null>('summary');
@@ -61,22 +62,28 @@ function Insights() {
             </View>
 
             {activeTab === 'summary' && transcriptData && (
-                <View style={styles.contentContainer}>
-                    <Text style={styles.contentText}>
-                        {transcriptData.data.summary.text}
-                    </Text>
-                </View>
+                <>
+                    <View style={styles.contentContainer}>
+                        <Text style={styles.contentText}>
+                            {transcriptData.data.summary.text}
+                        </Text>
+                    </View>
+                    <CallPanelFooter />
+                </>
             )}
 
             {activeTab === 'transcript' && transcriptData && (
-                <View style={{ ...styles.contentContainer, ...styles.transcriptionContainer }}>
-                    <View style={styles.transcriptContainer}>
-                        <TranscriptView
-                            words={transcriptData.data.transcript.data.words}
-                            speakerLabels={transcriptData.data.transcript.speakerLabels}
-                        />
+                <>
+                    <View style={{ ...styles.contentContainer, ...styles.transcriptionContainer }}>
+                        <View style={styles.transcriptContainer}>
+                            <TranscriptView
+                                words={transcriptData.data.transcript.data.words}
+                                speakerLabels={transcriptData.data.transcript.speakerLabels}
+                            />
+                        </View>
                     </View>
-                </View>
+                    <CallPanelFooter />
+                </>
             )}
         </View>
     )

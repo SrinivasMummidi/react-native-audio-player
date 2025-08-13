@@ -1,9 +1,13 @@
 import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { ActivityIndicator, StyleSheet, TouchableOpacity, View, Text } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 import { Slider } from 'react-native-awesome-slider';
 import { useSharedValue } from 'react-native-reanimated';
 import AudioRecorderPlayer, { PlayBackType } from 'react-native-audio-recorder-player';
 import Svg, { Path } from 'react-native-svg';
+// icons via react-native-svg-transformer
+import PlayIconAsset from '../../assets/icons/media-control-play-filled.svg';
+import PauseIconAsset from '../../assets/icons/media-control-pause-filled.svg';
+import LoadingIconAsset from '../../assets/icons/loading.svg';
 
 // Built-in 2-minute preview
 const DEFAULT_AUDIO_URL = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
@@ -14,15 +18,11 @@ interface SimpleAudioPlayerProps {
 }
 
 const PlayIcon = () => (
-  <Svg width={16} height={16} viewBox="0 0 24 24" fill="none">
-    <Path d="M8 5v14l11-7-11-7Z" fill="#676767" />
-  </Svg>
+  <PlayIconAsset width={16} height={16} fill="#676767" />
 );
 
 const PauseIcon = () => (
-  <Svg width={16} height={16} viewBox="0 0 24 24" fill="none">
-    <Path d="M7 5h4v14H7zM13 5h4v14h-4z" fill="#676767" />
-  </Svg>
+  <PauseIconAsset width={16} height={16} fill="#676767" />
 );
 
 const VolumeOnIcon = () => (
@@ -202,7 +202,7 @@ export default function SimpleAudioPlayer({ audioUrl }: SimpleAudioPlayerProps) 
     <View style={styles.pillContainer}>
       <TouchableOpacity style={styles.playButton} disabled={isLoading} onPress={handlePlayPause}>
         {isLoading || isBuffering ? (
-          <ActivityIndicator size="small" color="#111827" />
+          <LoadingIconAsset width={16} height={16} fill="#111827" />
         ) : isPlaying ? (
           <PauseIcon />
         ) : (

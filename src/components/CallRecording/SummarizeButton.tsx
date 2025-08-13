@@ -3,9 +3,9 @@ import {
   TouchableOpacity,
   Text,
   StyleSheet,
-  ActivityIndicator,
 } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import SparklesIcon from '../../assets/icons/sparkles.svg';
+import { LoadingSpinner } from '../common/LoadingSpinner';
 
 interface SummarizeButtonProps {
   onPress: () => void;
@@ -14,12 +14,7 @@ interface SummarizeButtonProps {
 }
 
 const SparkleIcon = ({ size = 18, color = '#676767' }) => (
-  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <Path
-      d="M12 2l1.8 7.2L21 11.9l-7.2 1.8L12 21l-1.8-7.2L3 11.9l7.2-1.7L12 2z"
-      fill={color}
-    />
-  </Svg>
+  <SparklesIcon width={size} height={size} fill={color} />
 );
 
 export const SummarizeButton: React.FC<SummarizeButtonProps> = ({
@@ -34,7 +29,7 @@ export const SummarizeButton: React.FC<SummarizeButtonProps> = ({
       disabled={disabled || isLoading}
     >
       {isLoading ? (
-        <ActivityIndicator size="small" color="#111827" />
+        <LoadingSpinner size={18} />
       ) : (
         <SparkleIcon />
       )}

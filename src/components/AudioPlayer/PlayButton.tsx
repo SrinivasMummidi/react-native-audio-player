@@ -1,25 +1,23 @@
 import React from 'react';
-import { TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import { TouchableOpacity, StyleSheet } from 'react-native';
+// icons via react-native-svg-transformer
+import PlayIconAsset from '../../assets/icons/media-control-play-filled.svg';
+import PauseIconAsset from '../../assets/icons/media-control-pause-filled.svg';
+import { LoadingSpinner } from '../common/LoadingSpinner';
 import { useAudioPlayer } from './AudioPlayerContext';
 
 const PlayIcon = ({ size = 16, color = '#111827' }) => (
-  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <Path d="M8 5v14l11-7-11-7Z" fill={color} />
-  </Svg>
+  <PlayIconAsset width={size} height={size} fill={color} />
 );
 
 const PauseIcon = ({ size = 16, color = '#111827' }) => (
-  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-    <Path d="M7 5h4v14H7zM13 5h4v14h-4z" fill={color} />
-  </Svg>
+  <PauseIconAsset width={size} height={size} fill={color} />
 );
 
 interface PlayButtonProps {
   size?: number;
   iconSize?: number;
   color?: string;
-  loadingColor?: string;
   disabled?: boolean;
   forceLoading?: boolean;
 }
@@ -28,7 +26,6 @@ export const PlayButton: React.FC<PlayButtonProps> = ({
   size = 32,
   iconSize = 16,
   color = '#111827',
-  loadingColor = '#111827',
   disabled = false,
   forceLoading = false,
 }) => {
@@ -63,7 +60,7 @@ export const PlayButton: React.FC<PlayButtonProps> = ({
       activeOpacity={0.7}
     >
       {showLoading ? (
-        <ActivityIndicator size="small" color={loadingColor} />
+        <LoadingSpinner size={iconSize} />
       ) : isPlaying ? (
         <PauseIcon size={iconSize} color={color} />
       ) : (

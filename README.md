@@ -173,6 +173,23 @@ This React Native implementation mirrors the Phonesystem web audio player for pl
 - Dispose of audio resources properly by calling stop methods when components unmount
 - Consider implementing audio caching for frequently played files
 
+## SVG Icons
+
+This project uses react-native-svg with react-native-svg-transformer so you can import SVGs as components from `src/assets/icons`:
+
+```tsx
+import PlayIcon from './src/assets/icons/media-control-play-filled.svg';
+
+export function IconExample() {
+  return <PlayIcon width={16} height={16} fill="#111827" />;
+}
+```
+
+Configuration:
+- Metro: `metro.config.js` sets `babelTransformerPath` and adjusts `assetExts`/`sourceExts`.
+- TypeScript: `src/types/svg.d.ts` declares `.svg` modules.
+- Jest: `jest.config.js` maps `.svg` to `__mocks__/svgMock.js`.
+
 ## License
 
 MIT
