@@ -2,7 +2,9 @@ import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 import { Slider } from 'react-native-awesome-slider';
 import { useSharedValue } from 'react-native-reanimated';
-import AudioRecorderPlayer, { PlayBackType } from 'react-native-audio-recorder-player';
+import AudioRecorderPlayer, {
+  PlayBackType,
+} from 'react-native-audio-recorder-player';
 import Svg, { Path } from 'react-native-svg';
 // icons via react-native-svg-transformer
 import PlayIconAsset from '../../assets/icons/media-control-play-filled.svg';
@@ -10,16 +12,15 @@ import PauseIconAsset from '../../assets/icons/media-control-pause-filled.svg';
 import LoadingIconAsset from '../../assets/icons/loading.svg';
 
 // Built-in 2-minute preview
-const DEFAULT_AUDIO_URL = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
+const DEFAULT_AUDIO_URL =
+  'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
 const MAX_PREVIEW_MS = 120_000; // 2 minutes
 
 interface SimpleAudioPlayerProps {
   audioUrl?: string; // optional; defaults to built-in sample
 }
 
-const PlayIcon = () => (
-  <PlayIconAsset width={16} height={16} fill="#676767" />
-);
+const PlayIcon = () => <PlayIconAsset width={16} height={16} fill="#676767" />;
 
 const PauseIcon = () => (
   <PauseIconAsset width={16} height={16} fill="#676767" />
@@ -28,19 +29,36 @@ const PauseIcon = () => (
 const VolumeOnIcon = () => (
   <Svg width={16} height={16} viewBox="0 0 24 24" fill="none">
     <Path d="M3 10v4h4l5 4V6L7 10H3Z" fill="#676767" />
-    <Path d="M16.5 8.5c1 .9 1.5 2 1.5 3.5s-.5 2.6-1.5 3.5" stroke="#676767" strokeWidth="2" strokeLinecap="round" />
-    <Path d="M19.5 6c1.8 1.6 2.5 3.4 2.5 6s-.7 4.4-2.5 6" stroke="#676767" strokeWidth="2" strokeLinecap="round" />
+    <Path
+      d="M16.5 8.5c1 .9 1.5 2 1.5 3.5s-.5 2.6-1.5 3.5"
+      stroke="#676767"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+    <Path
+      d="M19.5 6c1.8 1.6 2.5 3.4 2.5 6s-.7 4.4-2.5 6"
+      stroke="#676767"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
   </Svg>
 );
 
 const VolumeOffIcon = () => (
   <Svg width={16} height={16} viewBox="0 0 24 24" fill="none">
     <Path d="M3 10v4h4l5 4V6L7 10H3Z" fill="#676767" />
-    <Path d="M22 8l-6 6M16 8l6 6" stroke="#676767" strokeWidth="2" strokeLinecap="round" />
+    <Path
+      d="M22 8l-6 6M16 8l6 6"
+      stroke="#676767"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
   </Svg>
 );
 
-export default function SimpleAudioPlayer({ audioUrl }: SimpleAudioPlayerProps) {
+export default function SimpleAudioPlayer({
+  audioUrl,
+}: SimpleAudioPlayerProps) {
   const url = audioUrl || DEFAULT_AUDIO_URL;
 
   // Create a stable instance of AudioRecorderPlayer using useRef
@@ -68,11 +86,14 @@ export default function SimpleAudioPlayer({ audioUrl }: SimpleAudioPlayerProps) 
       try {
         await player.stopPlayer();
         player.removePlayBackListener();
-      } catch { }
+      } catch {}
 
       // attach listener
       player.addPlayBackListener((e: PlayBackType) => {
-        const targetDuration = e.duration > 0 ? Math.min(e.duration, MAX_PREVIEW_MS) : MAX_PREVIEW_MS;
+        const targetDuration =
+          e.duration > 0
+            ? Math.min(e.duration, MAX_PREVIEW_MS)
+            : MAX_PREVIEW_MS;
         setTotalDuration(targetDuration);
 
         // update progress (cap to target duration)
@@ -87,33 +108,39 @@ export default function SimpleAudioPlayer({ audioUrl }: SimpleAudioPlayerProps) 
         if (targetDuration > 0 && e.currentPosition >= targetDuration) {
           setIsPlaying(false);
           progress.value = 0;
-          player.stopPlayer().catch(() => { });
+          player.stopPlayer().catch(() => {});
           player.removePlayBackListener();
         }
       });
 
       await player.startPlayer(url);
       // Apply current volume and rate if available
-      try { await player.setVolume(isMuted ? 0 : 1); } catch { }
+      try {
+        await player.setVolume(isMuted ? 0 : 1);
+      } catch {}
       try {
         // Try multiple method names across platforms/versions
         // @ts-ignore
-        if (player.setRate) { // @ts-ignore
+        if (player.setRate) {
+          // @ts-ignore
           await player.setRate(rate);
         }
         // @ts-ignore
-        else if (player.setPlaybackRate) { // @ts-ignore
+        else if (player.setPlaybackRate) {
+          // @ts-ignore
           await player.setPlaybackRate(rate);
         }
         // @ts-ignore
-        else if (player.setSpeed) { // @ts-ignore
+        else if (player.setSpeed) {
+          // @ts-ignore
           await player.setSpeed(rate);
         }
         // @ts-ignore
-        else if (player.setPlaybackSpeed) { // @ts-ignore
+        else if (player.setPlaybackSpeed) {
+          // @ts-ignore
           await player.setPlaybackSpeed(rate);
         }
-      } catch { }
+      } catch {}
       setIsPlaying(true);
       setIsLoading(false); // flip spinner off immediately after start
       setIsBuffering(false);
@@ -145,17 +172,20 @@ export default function SimpleAudioPlayer({ audioUrl }: SimpleAudioPlayerProps) 
     // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
   }, []);
 
-  const onSeek = useCallback(async (value: number) => {
-    if (totalDuration > 0) {
-      const seekTime = (value / 100) * totalDuration;
-      try {
-        await player.seekToPlayer(seekTime);
-      } catch (e) {
-        console.error('seek failed', e);
+  const onSeek = useCallback(
+    async (value: number) => {
+      if (totalDuration > 0) {
+        const seekTime = (value / 100) * totalDuration;
+        try {
+          await player.seekToPlayer(seekTime);
+        } catch (e) {
+          console.error('seek failed', e);
+        }
       }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
-  }, [totalDuration]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
+    },
+    [totalDuration],
+  );
 
   const handlePlayPause = useCallback(() => {
     if (isPlaying) {
@@ -172,7 +202,9 @@ export default function SimpleAudioPlayer({ audioUrl }: SimpleAudioPlayerProps) 
   const toggleMute = useCallback(async () => {
     const next = !isMuted;
     setIsMuted(next);
-    try { await player.setVolume(next ? 0 : 1); } catch { }
+    try {
+      await player.setVolume(next ? 0 : 1);
+    } catch {}
     // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
   }, [isMuted]);
 
@@ -183,16 +215,17 @@ export default function SimpleAudioPlayer({ audioUrl }: SimpleAudioPlayerProps) 
     setRate(next);
     try {
       // @ts-ignore
-      if (player.setRate) { // @ts-ignore
+      if (player.setRate) {
+        // @ts-ignore
         await player.setRate(next);
       }
-    } catch { }
+    } catch {}
     // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
   }, [rate]);
 
   useEffect(() => {
     return () => {
-      player.stopPlayer().catch(() => { });
+      player.stopPlayer().catch(() => {});
       player.removePlayBackListener();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- player is a stable singleton
@@ -200,7 +233,11 @@ export default function SimpleAudioPlayer({ audioUrl }: SimpleAudioPlayerProps) 
 
   return (
     <View style={styles.pillContainer}>
-      <TouchableOpacity style={styles.playButton} disabled={isLoading} onPress={handlePlayPause}>
+      <TouchableOpacity
+        style={styles.playButton}
+        disabled={isLoading}
+        onPress={handlePlayPause}
+      >
         {isLoading || isBuffering ? (
           <LoadingIconAsset width={16} height={16} fill="#111827" />
         ) : isPlaying ? (
@@ -218,17 +255,29 @@ export default function SimpleAudioPlayer({ audioUrl }: SimpleAudioPlayerProps) 
           maximumValue={max}
           thumbWidth={12}
           onSlidingComplete={onSeek}
-          theme={{ maximumTrackTintColor: '#ddd', minimumTrackTintColor: '#111', cacheTrackTintColor: '#D1D5DB' }}
+          theme={{
+            maximumTrackTintColor: '#ddd',
+            minimumTrackTintColor: '#111',
+            cacheTrackTintColor: '#D1D5DB',
+          }}
         />
       </View>
 
       {/* volume toggle */}
-      <TouchableOpacity style={styles.smallButton} onPress={toggleMute} disabled={isLoading}>
+      <TouchableOpacity
+        style={styles.smallButton}
+        onPress={toggleMute}
+        disabled={isLoading}
+      >
         {isMuted ? <VolumeOffIcon /> : <VolumeOnIcon />}
       </TouchableOpacity>
 
       {/* rate toggle */}
-      <TouchableOpacity style={styles.smallButton} onPress={cycleRate} disabled={isLoading}>
+      <TouchableOpacity
+        style={styles.smallButton}
+        onPress={cycleRate}
+        disabled={isLoading}
+      >
         <Text style={styles.smallText}>{`${rate}x`}</Text>
       </TouchableOpacity>
     </View>

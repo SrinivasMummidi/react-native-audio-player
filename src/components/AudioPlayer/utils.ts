@@ -17,7 +17,7 @@ export const formatTime = (time: number): string => {
  */
 export function debounce<T extends (...args: any[]) => void>(
   func: T,
-  timeout = 300
+  timeout = 300,
 ): (...args: Parameters<T>) => void {
   let timer: NodeJS.Timeout | undefined;
   return (...args: Parameters<T>) => {
@@ -41,7 +41,9 @@ export const playbackRates = [
 /**
  * Get volume icon name based on volume level
  */
-export const getVolumeIconType = (volume: number): 'off' | 'low' | 'high' | 'max' => {
+export const getVolumeIconType = (
+  volume: number,
+): 'off' | 'low' | 'high' | 'max' => {
   if (volume === 0) return 'off';
   if (volume > 0 && volume < 50) return 'low';
   if (volume >= 50 && volume < 75) return 'high';
@@ -68,7 +70,10 @@ export const clamp = (value: number, min: number, max: number): number => {
 /**
  * Calculate percentage from current position and duration
  */
-export const calculateProgress = (currentPosition: number, duration: number): number => {
+export const calculateProgress = (
+  currentPosition: number,
+  duration: number,
+): number => {
   if (duration <= 0) return 0;
   return Math.min(100, (currentPosition / duration) * 100);
 };
@@ -76,6 +81,9 @@ export const calculateProgress = (currentPosition: number, duration: number): nu
 /**
  * Calculate position from percentage and duration
  */
-export const calculatePosition = (percentage: number, duration: number): number => {
+export const calculatePosition = (
+  percentage: number,
+  duration: number,
+): number => {
   return (percentage / 100) * duration;
 };

@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-} from 'react-native';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import SparklesIcon from '../../assets/icons/sparkles.svg';
 import { LoadingSpinner } from '../common/LoadingSpinner';
 
@@ -28,11 +24,7 @@ export const SummarizeButton: React.FC<SummarizeButtonProps> = ({
       onPress={onPress}
       disabled={disabled || isLoading}
     >
-      {isLoading ? (
-        <LoadingSpinner size={18} />
-      ) : (
-        <SparkleIcon />
-      )}
+      {isLoading ? <LoadingSpinner size={18} /> : <SparkleIcon />}
       <Text style={styles.summariseText}>
         {isLoading ? 'Summarising…' : 'Summarise'}
       </Text>

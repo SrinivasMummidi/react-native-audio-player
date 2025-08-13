@@ -1,5 +1,13 @@
-import { INBOUND_BASE_URLS_LIVE, INBOUND_BASE_URLS_STAGING } from '../lib/constants';
-import { type AppEnv, getEnvironment, isEnvironment, isProduction } from '../lib/environment';
+import {
+  INBOUND_BASE_URLS_LIVE,
+  INBOUND_BASE_URLS_STAGING,
+} from '../lib/constants';
+import {
+  type AppEnv,
+  getEnvironment,
+  isEnvironment,
+  isProduction,
+} from '../lib/environment';
 
 export type CallRecordingParams = {
   connectionId: string;
@@ -32,7 +40,9 @@ export const fetchCallRecordingUrl = async ({
     const baseURL = isProduction(mode)
       ? INBOUND_BASE_URLS_LIVE[brandId]
       : INBOUND_BASE_URLS_STAGING[brandId];
-    const url = `${baseURL}/v3/services/aws/getCallRecording/connectionId/${connectionId}?uniquePin=${uniquePin ?? ''}&messageSavedTime=${messageSavedTime ?? ''}`;
+    const url = `${baseURL}/v3/services/aws/getCallRecording/connectionId/${connectionId}?uniquePin=${
+      uniquePin ?? ''
+    }&messageSavedTime=${messageSavedTime ?? ''}`;
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -40,21 +50,30 @@ export const fetchCallRecordingUrl = async ({
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    if (!response.ok) throw new Error(`Error fetching call recording URL: ${response.statusText}`);
+    if (!response.ok)
+      throw new Error(
+        `Error fetching call recording URL: ${response.statusText}`,
+      );
     const data = await response.json();
     return data as CallRecordingResponse;
   }
 
-  if (isEnvironment(mode, 'development') || isEnvironment(mode, 'dev-preview')) {
+  if (
+    isEnvironment(mode, 'development') ||
+    isEnvironment(mode, 'dev-preview')
+  ) {
     if (!callRecApiKey) throw new Error('Missing required param callRecApiKey');
-    const response = await fetch('https://oa706f8gc6.execute-api.us-east-1.amazonaws.com/prod/getrecording', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': callRecApiKey,
+    const response = await fetch(
+      'https://oa706f8gc6.execute-api.us-east-1.amazonaws.com/prod/getrecording',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': callRecApiKey,
+        },
+        body: JSON.stringify({ contactId: connectionId }),
       },
-      body: JSON.stringify({ contactId: connectionId }),
-    });
+    );
     const data = await response.json();
     return {
       availableFor: data.availableFor as number,

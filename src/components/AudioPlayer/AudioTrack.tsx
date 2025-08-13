@@ -20,8 +20,7 @@ export const AudioTrack: React.FC<AudioTrackProps> = ({
   thumbColor = '#111',
   containerStyle,
 }) => {
-  const { currentPosition, totalDuration, seekTo, isReady } =
-    useAudioPlayer();
+  const { currentPosition, totalDuration, seekTo, isReady } = useAudioPlayer();
 
   // Calculate progress percentage
   const progressPercentage = useMemo(
@@ -66,7 +65,10 @@ export const AudioTrack: React.FC<AudioTrackProps> = ({
           heartbeatColor: thumbColor,
         }}
         onSlidingComplete={handleValueChange}
-        containerStyle={[styles.sliderContainer, { height: Math.max(6, height + 4) }]}
+        containerStyle={[
+          styles.sliderContainer,
+          { height: Math.max(6, height + 4) },
+        ]}
         disable={!isReady || totalDuration === 0}
       />
     </View>

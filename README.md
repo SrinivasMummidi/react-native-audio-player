@@ -9,6 +9,7 @@ See MIGRATION.md for upgrade notes from older versions within this repo.
 ## Features
 
 ### Playback
+
 - ✅ Play/pause/stop controls
 - ✅ Seek with an interactive slider
 - ✅ Playback speed control (0.5x–2.0x)
@@ -16,6 +17,7 @@ See MIGRATION.md for upgrade notes from older versions within this repo.
 - ✅ Volume/mute support at the provider level
 
 ### Architecture
+
 - ✅ Context-based state management with AudioPlayerProvider
 - ✅ Composable UI pieces (PlayButton, AudioTrack, PlaybackSpeedSelector)
 
@@ -75,7 +77,11 @@ export function MyScreen() {
 ### 2) Compose with context
 
 ```tsx
-import { AudioPlayerProvider, AudioPlayerContent, useAudioPlayer } from './src/components/AudioPlayer';
+import {
+  AudioPlayerProvider,
+  AudioPlayerContent,
+  useAudioPlayer,
+} from './src/components/AudioPlayer';
 
 export function MyScreen() {
   const [url, setUrl] = React.useState<string | undefined>();
@@ -96,19 +102,19 @@ export function MyScreen() {
 
 ### AudioPlayer Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `audioUrl` | `string` | `undefined` | URL of the audio file to play |
-| `onError` | `(error: string) => void` | `undefined` | Error callback when playback fails |
-| UI props | Various | See source | Styling and visibility flags (e.g., showPlaybackSpeed, showTotalTime) |
+| Prop       | Type                      | Default     | Description                                                           |
+| ---------- | ------------------------- | ----------- | --------------------------------------------------------------------- |
+| `audioUrl` | `string`                  | `undefined` | URL of the audio file to play                                         |
+| `onError`  | `(error: string) => void` | `undefined` | Error callback when playback fails                                    |
+| UI props   | Various                   | See source  | Styling and visibility flags (e.g., showPlaybackSpeed, showTotalTime) |
 
 ### AudioPlayerProvider Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | - | Child components |
-| `defaultAudioUrl` | `string` | `undefined` | Initial URL to load |
-| `onError` | `(error: string) => void` | `undefined` | Error callback when playback fails |
+| Prop              | Type                      | Default     | Description                        |
+| ----------------- | ------------------------- | ----------- | ---------------------------------- |
+| `children`        | `ReactNode`               | -           | Child components                   |
+| `defaultAudioUrl` | `string`                  | `undefined` | Initial URL to load                |
+| `onError`         | `(error: string) => void` | `undefined` | Error callback when playback fails |
 
 ### useAudioPlayer
 
@@ -151,13 +157,13 @@ The components automatically handle permission requests on Android. For iOS, ens
 
 This React Native implementation mirrors the Phonesystem web audio player for playback UX:
 
-| Feature | Web Version | React Native Version |
-|---------|-------------|---------------------|
-| Audio Playback | ✅ HTML5 Audio | ✅ react-native-audio-recorder-player |
-| Progress Slider | ✅ Custom slider | ✅ react-native-awesome-slider |
-| Volume Control | ✅ Web API | ✅ Native volume control |
-| Speed Control | ✅ Web API | ✅ Native speed control |
-| Context State | ✅ React Context | ✅ React Context |
+| Feature         | Web Version      | React Native Version                  |
+| --------------- | ---------------- | ------------------------------------- |
+| Audio Playback  | ✅ HTML5 Audio   | ✅ react-native-audio-recorder-player |
+| Progress Slider | ✅ Custom slider | ✅ react-native-awesome-slider        |
+| Volume Control  | ✅ Web API       | ✅ Native volume control              |
+| Speed Control   | ✅ Web API       | ✅ Native speed control               |
+| Context State   | ✅ React Context | ✅ React Context                      |
 
 ## Troubleshooting
 
@@ -186,6 +192,7 @@ export function IconExample() {
 ```
 
 Configuration:
+
 - Metro: `metro.config.js` sets `babelTransformerPath` and adjusts `assetExts`/`sourceExts`.
 - TypeScript: `src/types/svg.d.ts` declares `.svg` modules.
 - Jest: `jest.config.js` maps `.svg` to `__mocks__/svgMock.js`.

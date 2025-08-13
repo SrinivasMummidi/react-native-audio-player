@@ -5,10 +5,7 @@ import { pluginBrownfieldAndroid } from '@rnef/plugin-brownfield-android';
 import { pluginMetro } from '@rnef/plugin-metro';
 
 export default {
-  plugins: [
-    pluginBrownfieldIos(),
-    pluginBrownfieldAndroid(),
-  ],
+  plugins: [pluginBrownfieldIos(), pluginBrownfieldAndroid()],
   bundler: pluginMetro(),
   platforms: {
     ios: platformIOS(),

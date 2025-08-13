@@ -10,7 +10,8 @@
     "android": "rnef run:android",
     "package:ios": "rnef package:ios --scheme NativeAppReact --configuration Release",
     "package:aar": "rnef package:aar --variant Release --module-name nativeappreact",
-    "publish-local:aar": "pnpm package:aar && rnef publish-local:aar --module-name nativeappreact"
+    "publish-local:aar": "pnpm package:aar && rnef publish-local:aar --module-name nativeappreact",
+    "format": "prettier --ignore-path .gitignore --write ."
   },
   "dependencies": {
     "@callstack/react-native-brownfield": "^1.2.0",

@@ -1,5 +1,7 @@
-export const INSIGHTS_URL_STAGING = 'https://backend.staging.switchport.app/api/v1/call/insights';
-export const INSIGHTS_URL_LIVE = 'https://backend.switchport.app/api/v1/call/insights';
+export const INSIGHTS_URL_STAGING =
+  'https://backend.staging.switchport.app/api/v1/call/insights';
+export const INSIGHTS_URL_LIVE =
+  'https://backend.switchport.app/api/v1/call/insights';
 
 export const BRANDIDS = {
   ANSWER_CONNECT: '5a6e67a6-8bfd-45f5-a774-3462cb0c4e4c',

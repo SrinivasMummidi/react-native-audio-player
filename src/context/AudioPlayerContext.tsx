@@ -1,5 +1,15 @@
-import React, { createContext, useContext, useState, useRef, useCallback, useEffect } from 'react';
-import AudioRecorderPlayer, { PlayBackType, RecordBackType } from 'react-native-audio-recorder-player';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useRef,
+  useCallback,
+  useEffect,
+} from 'react';
+import AudioRecorderPlayer, {
+  PlayBackType,
+  RecordBackType,
+} from 'react-native-audio-recorder-player';
 import { Alert, Platform, PermissionsAndroid } from 'react-native';
 
 export interface AudioPlayerContextType {
@@ -9,17 +19,17 @@ export interface AudioPlayerContextType {
   totalDuration: number;
   isLoading: boolean;
   audioUrl: string | null;
-  
+
   // Recording state
   isRecording: boolean;
   recordTime: string;
   recordSecs: number;
   isPaused: boolean;
-  
+
   // Audio settings
   volume: number;
   playbackSpeed: number;
-  
+
   // Actions
   setAudioUrl: (url: string | null) => void;
   startPlayback: () => Promise<void>;
@@ -31,7 +41,7 @@ export interface AudioPlayerContextType {
   skipBackward: () => Promise<void>;
   setVolumeLevel: (volume: number) => Promise<void>;
   setSpeed: (speed: number) => Promise<void>;
-  
+
   // Recording actions
   startRecording: () => Promise<void>;
   stopRecording: () => Promise<string | null>;
@@ -58,17 +68,17 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
   const [totalDuration, setTotalDuration] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  
+
   // Recording state
   const [isRecording, setIsRecording] = useState(false);
   const [recordTime, setRecordTime] = useState('00:00:00');
   const [recordSecs, setRecordSecs] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  
+
   // Audio settings
   const [volume, setVolume] = useState(1.0);
   const [playbackSpeed, setPlaybackSpeed] = useState(1.0);
-  
+
   const audioRecorderPlayerRef = useRef(new AudioRecorderPlayer());
 
   // Request permissions for Android
@@ -82,9 +92,12 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
         ]);
 
         return (
-          grants['android.permission.WRITE_EXTERNAL_STORAGE'] === PermissionsAndroid.RESULTS.GRANTED &&
-          grants['android.permission.READ_EXTERNAL_STORAGE'] === PermissionsAndroid.RESULTS.GRANTED &&
-          grants['android.permission.RECORD_AUDIO'] === PermissionsAndroid.RESULTS.GRANTED
+          grants['android.permission.WRITE_EXTERNAL_STORAGE'] ===
+            PermissionsAndroid.RESULTS.GRANTED &&
+          grants['android.permission.READ_EXTERNAL_STORAGE'] ===
+            PermissionsAndroid.RESULTS.GRANTED &&
+          grants['android.permission.RECORD_AUDIO'] ===
+            PermissionsAndroid.RESULTS.GRANTED
         );
       } catch (err) {
         console.warn(err);
@@ -106,7 +119,7 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
       audioRecorderPlayerRef.current.addPlayBackListener((e: PlayBackType) => {
         setCurrentPosition(e.currentPosition);
         setTotalDuration(e.duration);
-        
+
         // Check if playback has ended
         if (e.duration > 0 && e.currentPosition >= e.duration) {
           setIsPlaying(false);
@@ -156,14 +169,17 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     }
   }, [onError]);
 
-  const seekTo = useCallback(async (position: number) => {
-    try {
-      await audioRecorderPlayerRef.current.seekToPlayer(position);
-    } catch (error) {
-      console.error('Failed to seek:', error);
-      onError?.('Failed to seek');
-    }
-  }, [onError]);
+  const seekTo = useCallback(
+    async (position: number) => {
+      try {
+        await audioRecorderPlayerRef.current.seekToPlayer(position);
+      } catch (error) {
+        console.error('Failed to seek:', error);
+        onError?.('Failed to seek');
+      }
+    },
+    [onError],
+  );
 
   const skipForward = useCallback(async () => {
     const newPosition = Math.min(currentPosition + 10000, totalDuration);
@@ -175,25 +191,31 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     await seekTo(newPosition);
   }, [currentPosition, seekTo]);
 
-  const setVolumeLevel = useCallback(async (vol: number) => {
-    setVolume(vol);
-    try {
-      await audioRecorderPlayerRef.current.setVolume(vol);
-    } catch (error) {
-      console.error('Failed to set volume:', error);
-      onError?.('Failed to set volume');
-    }
-  }, [onError]);
+  const setVolumeLevel = useCallback(
+    async (vol: number) => {
+      setVolume(vol);
+      try {
+        await audioRecorderPlayerRef.current.setVolume(vol);
+      } catch (error) {
+        console.error('Failed to set volume:', error);
+        onError?.('Failed to set volume');
+      }
+    },
+    [onError],
+  );
 
-  const setSpeed = useCallback(async (speed: number) => {
-    setPlaybackSpeed(speed);
-    try {
-      await audioRecorderPlayerRef.current.setPlaybackSpeed(speed);
-    } catch (error) {
-      console.error('Failed to set playback speed:', error);
-      onError?.('Failed to set playback speed');
-    }
-  }, [onError]);
+  const setSpeed = useCallback(
+    async (speed: number) => {
+      setPlaybackSpeed(speed);
+      try {
+        await audioRecorderPlayerRef.current.setPlaybackSpeed(speed);
+      } catch (error) {
+        console.error('Failed to set playback speed:', error);
+        onError?.('Failed to set playback speed');
+      }
+    },
+    [onError],
+  );
 
   // Recording functions
   const startRecording = useCallback(async () => {
@@ -201,15 +223,24 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     try {
       const hasPermission = await requestPermissions();
       if (!hasPermission) {
-        Alert.alert('Permissions', 'Microphone permission is required to record audio');
+        Alert.alert(
+          'Permissions',
+          'Microphone permission is required to record audio',
+        );
         setIsLoading(false);
         return;
       }
 
-      audioRecorderPlayerRef.current.addRecordBackListener((e: RecordBackType) => {
-        setRecordSecs(e.currentPosition);
-        setRecordTime(audioRecorderPlayerRef.current.mmssss(Math.floor(e.currentPosition)));
-      });
+      audioRecorderPlayerRef.current.addRecordBackListener(
+        (e: RecordBackType) => {
+          setRecordSecs(e.currentPosition);
+          setRecordTime(
+            audioRecorderPlayerRef.current.mmssss(
+              Math.floor(e.currentPosition),
+            ),
+          );
+        },
+      );
 
       await audioRecorderPlayerRef.current.startRecorder();
       setIsRecording(true);
@@ -231,7 +262,7 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
       setRecordSecs(0);
       setRecordTime('00:00:00');
       setIsPaused(false);
-      
+
       onRecordingComplete?.(result);
       return result;
     } catch (error) {
@@ -281,17 +312,17 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     totalDuration,
     isLoading,
     audioUrl,
-    
+
     // Recording state
     isRecording,
     recordTime,
     recordSecs,
     isPaused,
-    
+
     // Audio settings
     volume,
     playbackSpeed,
-    
+
     // Actions
     setAudioUrl,
     startPlayback,
@@ -303,7 +334,7 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     skipBackward,
     setVolumeLevel,
     setSpeed,
-    
+
     // Recording actions
     startRecording,
     stopRecording,
@@ -321,7 +352,9 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
 export const useAudioPlayer = (): AudioPlayerContextType => {
   const context = useContext(AudioPlayerContext);
   if (!context) {
-    throw new Error('useAudioPlayer must be used within an AudioPlayerProvider');
+    throw new Error(
+      'useAudioPlayer must be used within an AudioPlayerProvider',
+    );
   }
   return context;
 };

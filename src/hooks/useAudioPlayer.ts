@@ -18,7 +18,12 @@ type UseAudioPlayerOptions = {
 };
 
 export function useAudioPlayer(options: UseAudioPlayerOptions = {}) {
-  const { uri, initialRate = 1.0, volume = 1.0, enableRecording = false } = options;
+  const {
+    uri,
+    initialRate = 1.0,
+    volume = 1.0,
+    enableRecording = false,
+  } = options;
 
   const [isLoading, setIsLoading] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -35,16 +40,25 @@ export function useAudioPlayer(options: UseAudioPlayerOptions = {}) {
   const hasRecordListenerRef = useRef(false);
 
   // Derived strings
-  const playTime = useMemo(() => AudioRecorderPlayer.mmssss(Math.floor(playTimeMs)), [playTimeMs]);
-  const duration = useMemo(() => AudioRecorderPlayer.mmssss(Math.floor(durationMs)), [durationMs]);
-  const recordTime = useMemo(() => AudioRecorderPlayer.mmssss(Math.floor(recordTimeMs)), [recordTimeMs]);
+  const playTime = useMemo(
+    () => AudioRecorderPlayer.mmssss(Math.floor(playTimeMs)),
+    [playTimeMs],
+  );
+  const duration = useMemo(
+    () => AudioRecorderPlayer.mmssss(Math.floor(durationMs)),
+    [durationMs],
+  );
+  const recordTime = useMemo(
+    () => AudioRecorderPlayer.mmssss(Math.floor(recordTimeMs)),
+    [recordTimeMs],
+  );
 
   // Setup initial volume/rate
   useEffect(() => {
     (async () => {
       try {
-  await AudioRecorderPlayer.setVolume(volume);
-  await AudioRecorderPlayer.setPlaybackSpeed(initialRate);
+        await AudioRecorderPlayer.setVolume(volume);
+        await AudioRecorderPlayer.setPlaybackSpeed(initialRate);
       } catch {}
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -93,18 +107,21 @@ export function useAudioPlayer(options: UseAudioPlayerOptions = {}) {
     hasRecordListenerRef.current = false;
   }, []);
 
-  const play = useCallback(async (customUri?: string) => {
-    setIsLoading(true);
-    try {
-      addPlaybackListeners();
-      await AudioRecorderPlayer.startPlayer(customUri ?? uri);
-      await AudioRecorderPlayer.setPlaybackSpeed(rate);
-      setIsPlaying(true);
-      setIsPaused(false);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [addPlaybackListeners, rate, uri]);
+  const play = useCallback(
+    async (customUri?: string) => {
+      setIsLoading(true);
+      try {
+        addPlaybackListeners();
+        await AudioRecorderPlayer.startPlayer(customUri ?? uri);
+        await AudioRecorderPlayer.setPlaybackSpeed(rate);
+        setIsPlaying(true);
+        setIsPaused(false);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [addPlaybackListeners, rate, uri],
+  );
 
   const pause = useCallback(async () => {
     setIsLoading(true);
@@ -158,29 +175,39 @@ export function useAudioPlayer(options: UseAudioPlayerOptions = {}) {
   }, []);
 
   // Recording APIs (optional)
-  const defaultAudioSet: AudioSet = useMemo(() => ({
-    AVSampleRateKeyIOS: 44100,
-  // In v4, AVFormatIDKeyIOS expects a string union. Use 'aac' instead of AVEncodingOption.aac
-  AVFormatIDKeyIOS: 'aac' as AVEncodingOption,
-    AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
-    AVNumberOfChannelsKeyIOS: 2,
-    AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
-    AudioSourceAndroid: AudioSourceAndroidType.MIC,
-  }), []);
+  const defaultAudioSet: AudioSet = useMemo(
+    () => ({
+      AVSampleRateKeyIOS: 44100,
+      // In v4, AVFormatIDKeyIOS expects a string union. Use 'aac' instead of AVEncodingOption.aac
+      AVFormatIDKeyIOS: 'aac' as AVEncodingOption,
+      AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
+      AVNumberOfChannelsKeyIOS: 2,
+      AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
+      AudioSourceAndroid: AudioSourceAndroidType.MIC,
+    }),
+    [],
+  );
 
-  const startRecord = useCallback(async (path?: string) => {
-    if (!enableRecording) return undefined;
-    setIsLoading(true);
-    try {
-      addRecordListener();
-      const res = await AudioRecorderPlayer.startRecorder(path, defaultAudioSet, true);
-  setIsRecording(true);
-  setIsRecordPaused(false);
-      return res;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [addRecordListener, defaultAudioSet, enableRecording]);
+  const startRecord = useCallback(
+    async (path?: string) => {
+      if (!enableRecording) return undefined;
+      setIsLoading(true);
+      try {
+        addRecordListener();
+        const res = await AudioRecorderPlayer.startRecorder(
+          path,
+          defaultAudioSet,
+          true,
+        );
+        setIsRecording(true);
+        setIsRecordPaused(false);
+        return res;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [addRecordListener, defaultAudioSet, enableRecording],
+  );
 
   const stopRecord = useCallback(async () => {
     if (!enableRecording) return undefined;
@@ -251,10 +278,10 @@ export function useAudioPlayer(options: UseAudioPlayerOptions = {}) {
     // recording (optional)
     startRecord,
     stopRecord,
-  pauseRecord,
-  resumeRecord,
-  isRecording,
-  isRecordPaused,
+    pauseRecord,
+    resumeRecord,
+    isRecording,
+    isRecordPaused,
   };
 }
 

@@ -29,7 +29,8 @@ export const PlayButton: React.FC<PlayButtonProps> = ({
   disabled = false,
   forceLoading = false,
 }) => {
-  const { isPlaying, isLoading, isBuffering, play, pause, audioUrl, isReady } = useAudioPlayer();
+  const { isPlaying, isLoading, isBuffering, play, pause, audioUrl, isReady } =
+    useAudioPlayer();
 
   const handlePress = async () => {
     if (disabled || isLoading) return;

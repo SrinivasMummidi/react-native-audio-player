@@ -60,25 +60,26 @@ interface ApiResponse {
  * @returns Formatted speaker label
  */
 export function formatSpeakerLabel(
-  segment: { speaker?: string }, 
-  speakerLabels?: SpeakerLabels
+  segment: { speaker?: string },
+  speakerLabels?: SpeakerLabels,
 ): string {
   if (!segment.speaker) {
     return 'Speaker';
   }
 
   // Generate fallback label from speaker ID
-  const speakerNumber = Number.parseInt(segment.speaker.replace('speaker_', ''), 10) + 1;
+  const speakerNumber =
+    Number.parseInt(segment.speaker.replace('speaker_', ''), 10) + 1;
   const fallbackLabel = `Speaker ${speakerNumber}`;
 
   // Use speaker labels if available
   if (speakerLabels?.[segment.speaker]) {
     const { name, type } = speakerLabels[segment.speaker];
-    
+
     if (type === 'caller') {
       return name || 'Caller';
     }
-    
+
     return type.charAt(0).toUpperCase() + type.slice(1);
   }
 
@@ -91,7 +92,9 @@ export function formatSpeakerLabel(
  * @param transcriptData - Raw transcript data from API
  * @returns Array of transcript segments grouped by speaker
  */
-function formatTranscript(transcriptData: RawTranscriptData | null | undefined): TranscriptSegment[] {
+function formatTranscript(
+  transcriptData: RawTranscriptData | null | undefined,
+): TranscriptSegment[] {
   // Handle null, undefined, or missing words array
   if (!transcriptData) {
     return [];
@@ -136,34 +139,36 @@ interface FetchInsightsParams {
  * @returns Promise resolving to insights response
  * @throws Error if API request fails
  */
-export async function fetchInsightsNative(params: FetchInsightsParams): Promise<InsightsResponse> {
+export async function fetchInsightsNative(
+  params: FetchInsightsParams,
+): Promise<InsightsResponse> {
   const { connectionId, getAccessToken, baseUrl } = params;
-  
+
   try {
     const token = await getAccessToken();
-    
+
     const response = await fetch(`${baseUrl}/${connectionId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ 
-        components: ['transcript', 'summary'] 
+      body: JSON.stringify({
+        components: ['transcript', 'summary'],
       }),
     });
-    
+
     if (!response.ok) {
       throw new Error(
-        `Insights API request failed: ${response.status} ${response.statusText}`
+        `Insights API request failed: ${response.status} ${response.statusText}`,
       );
     }
-    
+
     const data: ApiResponse = await response.json();
-    
+
     // Extract and process response data with multiple fallback paths
     const summary = data.data?.summary?.text;
-    
+
     // Try multiple possible paths for transcript data
     let transcriptData = null;
     const possiblePaths = [
@@ -174,32 +179,32 @@ export async function fetchInsightsNative(params: FetchInsightsParams): Promise<
       data.data?.transcription?.data,
       data.data?.transcription,
     ];
-    
+
     for (const path of possiblePaths) {
       if (path && (path.words || Array.isArray(path))) {
         transcriptData = path;
         break;
       }
     }
-    
+
     // If transcript data is an array directly, wrap it
     if (Array.isArray(transcriptData)) {
       transcriptData = { words: transcriptData };
     }
-    
+
     const transcript = formatTranscript(transcriptData);
-    
+
     // Try multiple paths for speaker labels
-    const speakerLabels = 
+    const speakerLabels =
       data.data?.transcript?.speakerLabels ||
       data.data?.speakerLabels ||
       data.transcript?.speakerLabels ||
       data.speakerLabels;
 
-    return { 
-      summary, 
-      transcript, 
-      speakerLabels 
+    return {
+      summary,
+      transcript,
+      speakerLabels,
     };
   } catch (error) {
     if (error instanceof Error) {

@@ -9,7 +9,10 @@ import {
 } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import SummarizeButton from './src/components/CallRecording/SummarizeButton';
-import { AudioPlayerProvider, AudioPlayerContent } from './src/components/AudioPlayer';
+import {
+  AudioPlayerProvider,
+  AudioPlayerContent,
+} from './src/components/AudioPlayer';
 import { AudioPlayerProvider as TranscriptAudioPlayerProvider } from './src/context/TranscriptAudioPlayerContext';
 import Insights from './src/components/Transcript/Insights';
 import { fetchCallRecordingUrl } from './src/services/fetch-call-recording';
@@ -64,7 +67,7 @@ export default function App({
         if (!mounted) return;
         setAudioUrl(res.data);
       } catch (e: any) {
-        console.log("Error fetching audio URL:", e);
+        console.log('Error fetching audio URL:', e);
         if (!mounted) return;
         setError(e?.message ?? 'Failed to fetch recording');
       }
@@ -123,9 +126,7 @@ export default function App({
                 onPress={handleSummaryToggle}
                 isLoading={isSummaryLoading}
               />
-              {showSummaryPanel && (
-                <Insights />
-              )}
+              {showSummaryPanel && <Insights />}
             </TranscriptAudioPlayerProvider>
           </AudioPlayerProvider>
         </View>
