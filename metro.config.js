@@ -16,6 +16,8 @@ const config = {
       transform: {
         experimentalImportSupport: false,
         inlineRequires: true,
+        // Enable for React Compiler compatibility
+        unstable_allowRequireContext: true,
       },
     }),
   },
