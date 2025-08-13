@@ -1,4 +1,4 @@
-import { Word, TranscriptSegment } from '../types/transcript';
+import { Word, TranscriptSegment } from '../types/types';
 
 export const formatTranscriptData = (words: Word[]): TranscriptSegment[] => {
   const segments: TranscriptSegment[] = [];

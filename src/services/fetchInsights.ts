@@ -1,4 +1,4 @@
-import type { MockResponseData } from '../types/transcript';
+import type { MockResponseData } from '../types/types';
 
 async function fetchInsights({
   connectionId,

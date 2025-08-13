@@ -1,3 +1,5 @@
+import type { AppEnv } from '../types/types';
+
 const environment = [
   'dev-preview',
   'development',
@@ -5,8 +7,6 @@ const environment = [
   'beta',
   'live',
 ] as const;
-
-export type AppEnv = (typeof environment)[number];
 
 export const getEnvironment = (appEnv?: AppEnv): AppEnv => {
   if (appEnv && environment.includes(appEnv)) return appEnv;

@@ -1,23 +1,35 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Word, SpeakerLabels } from '../../types/transcript';
+import { Word, SpeakerLabels } from '../../types/types';
+import HighlightableText from '../Search/HighlightableText';
 
 interface WordComponentProps {
   word: Word;
   shouldHighlight: boolean;
   onPress: () => void;
+  segmentIndex: number;
+  wordIndex: number;
 }
 
 const WordComponent: React.FC<WordComponentProps> = ({
   word,
   shouldHighlight,
   onPress,
+  segmentIndex,
+  wordIndex
 }) => {
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
-      <Text style={[styles.word, shouldHighlight && styles.pastWord]}>
-        {word.text}
-      </Text>
+      <HighlightableText
+        text={word.text}
+        segmentIndex={segmentIndex}
+        wordIndex={wordIndex}
+        style={[
+          styles.word,
+          shouldHighlight && styles.pastWord
+        ]}
+        onPress={onPress}
+      />
     </TouchableOpacity>
   );
 };
@@ -27,6 +39,7 @@ interface TranscriptSegmentProps {
   words: Word[];
   speakerLabels: SpeakerLabels;
   currentTime: number;
+  segmentIndex: number;
   onWordPress: (time: number) => void;
   isActiveSegment?: boolean;
 }
@@ -36,6 +49,7 @@ const TranscriptSegment: React.FC<TranscriptSegmentProps> = ({
   words,
   speakerLabels,
   currentTime,
+  segmentIndex,
   onWordPress,
 }) => {
   const speaker = speakerLabels[speakerId];
@@ -55,8 +69,10 @@ const TranscriptSegment: React.FC<TranscriptSegmentProps> = ({
               key={`${speakerId}-${index}`}
               word={word}
               shouldHighlight={shouldHighlight}
+              segmentIndex={segmentIndex}
+              wordIndex={index}
               onPress={() => {
-                onWordPress(word.start);
+                onWordPress(word.start)
               }}
             />
           );
@@ -68,13 +84,7 @@ const TranscriptSegment: React.FC<TranscriptSegmentProps> = ({
 
 const styles = StyleSheet.create({
   segmentContainer: {
-    marginBottom: 16,
-  },
-  activeSegmentContainer: {
-    backgroundColor: '#F3F4F6',
-    borderRadius: 6,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
+    marginBottom: 12,
   },
   speakerHeader: {
     flexDirection: 'row',
@@ -93,7 +103,8 @@ const styles = StyleSheet.create({
   },
   word: {
     fontSize: 12,
-    lineHeight: 24,
+    marginBottom: 4,
+    lineHeight: 20,
     color: '#9c9c9c', // Light grey for future words
     marginRight: 2,
   },

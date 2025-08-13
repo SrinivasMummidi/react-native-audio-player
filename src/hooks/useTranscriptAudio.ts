@@ -1,9 +1,5 @@
 import { useAudioPlayer } from '../components/AudioPlayer/AudioPlayerContext';
-
-interface UseTranscriptAudioReturn {
-  currentTime: number;
-  seek: (time: number) => void;
-}
+import type { UseTranscriptAudioReturn } from '../types/types';
 
 export const useTranscriptAudio = (): UseTranscriptAudioReturn => {
   const { currentPosition, seekTo } = useAudioPlayer();

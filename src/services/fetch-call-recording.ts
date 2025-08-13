@@ -3,27 +3,11 @@ import {
   INBOUND_BASE_URLS_STAGING,
 } from '../lib/constants';
 import {
-  type AppEnv,
   getEnvironment,
   isEnvironment,
   isProduction,
 } from '../lib/environment';
-
-export type CallRecordingParams = {
-  connectionId: string;
-  brandId?: string;
-  getAccessToken: () => Promise<string>;
-  uniquePin?: string;
-  mode?: AppEnv;
-  callRecApiKey?: string;
-  messageSavedTime?: number;
-};
-
-export type CallRecordingResponse = {
-  availableFor: number;
-  data: string;
-  expiryTime: number;
-};
+import type { CallRecordingParams, CallRecordingResponse } from '../types/types';
 
 export const fetchCallRecordingUrl = async ({
   connectionId,

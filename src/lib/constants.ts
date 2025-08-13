@@ -56,5 +56,3 @@ export const INBOUND_BASE_URLS_STAGING: Record<string, string> = {
   [BRANDIDS.LISTERPLACE]: 'https://api.staging.listerplace.app',
   [BRANDIDS.SETMORE]: 'https://bc-api.staging.setmore.com',
 };
-
-export type AppEnv = 'development' | 'staging' | 'production' | 'dev-preview';

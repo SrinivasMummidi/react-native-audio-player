@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { TouchableOpacity, View, StyleSheet, Text } from 'react-native';
 import { fetchInsights } from '../../services/fetchInsights';
-import { MockResponseData } from '../../types/transcript';
+import { MockResponseData } from '../../types/types';
 import { useAudioPlayerContext } from '../../context/TranscriptAudioPlayerContext';
 import TranscriptView from './TranscriptView';
 import CallPanelFooter from '../CallRecording/CallPanelFooter';

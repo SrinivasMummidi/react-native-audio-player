@@ -1,26 +1,28 @@
-import React, { useRef, useEffect, useMemo, useState } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
-import { SpeakerLabels, Word } from '../../types/transcript';
+import { SpeakerLabels, Word } from '../../types/types';
 import TranscriptSegmentComponent from './TranscriptSegment';
 import { formatTranscriptData } from '../../utils/transcriptUtils';
 import { useTranscriptAudio } from '../../hooks/useTranscriptAudio';
 import { useAudioPlayer } from '../AudioPlayer/AudioPlayerContext';
+import { SearchProvider, useSearch } from '../../context/SearchContext';
+import SearchInput from '../Search/SearchInput';
 
 interface TranscriptViewProps {
   words: Word[];
   speakerLabels: SpeakerLabels;
 }
 
-const TranscriptView: React.FC<TranscriptViewProps> = ({
+const TranscriptViewContent: React.FC<TranscriptViewProps> = ({
   words,
   speakerLabels,
 }) => {
-  const [autoScroll] = useState(true);
   const scrollViewRef = useRef<ScrollView>(null);
   const rowPositionsRef = useRef<number[]>([]);
 
   const { currentTime, seek } = useTranscriptAudio();
   const { isPlaying } = useAudioPlayer();
+  const { shouldAutoScroll, searchState } = useSearch();
   const segments = useMemo(() => formatTranscriptData(words), [words]);
 
   // Find active segment based on current audio position
@@ -39,9 +41,8 @@ const TranscriptView: React.FC<TranscriptViewProps> = ({
     });
   }, [segments, currentTime]);
 
-  // Auto-scroll when the active segment changes
   useEffect(() => {
-    if (!autoScroll || !isPlaying) return;
+    if (!shouldAutoScroll || !isPlaying) return;
     if (activeSegmentIndex < 0) return;
 
     const segmentPosition = rowPositionsRef.current[activeSegmentIndex];
@@ -49,20 +50,34 @@ const TranscriptView: React.FC<TranscriptViewProps> = ({
       const targetPosition = Math.max(0, segmentPosition - 120);
       scrollViewRef.current?.scrollTo({ y: targetPosition, animated: true });
     }
-  }, [activeSegmentIndex, autoScroll, isPlaying]);
+  }, [activeSegmentIndex, shouldAutoScroll, isPlaying]);
+
+  // Scroll to current search match
+  useEffect(() => {
+    if (searchState.currentMatchIndex >= 0 && searchState.matches.length > 0) {
+      const currentMatch = searchState.matches[searchState.currentMatchIndex];
+      const segmentPosition = rowPositionsRef.current[currentMatch.segmentIndex];
+
+      if (typeof segmentPosition === 'number') {
+        const targetPosition = Math.max(0, segmentPosition - 120);
+        scrollViewRef.current?.scrollTo({ y: targetPosition, animated: true });
+      }
+    }
+  }, [searchState.currentMatchIndex, searchState.matches]);
 
   if (!segments.length) {
     return (
       <View style={styles.container}>
+        <SearchInput />
         <View style={styles.emptyState}>
           <Text style={styles.emptyText}>No transcript available</Text>
         </View>
       </View>
     );
   }
-
   return (
     <View style={styles.container}>
+      <SearchInput />
       <ScrollView
         ref={scrollViewRef}
         style={styles.scrollView}
@@ -75,7 +90,7 @@ const TranscriptView: React.FC<TranscriptViewProps> = ({
           return (
             <View
               key={`${segment.speaker_id}-${index}`}
-              onLayout={e => {
+              onLayout={(e) => {
                 rowPositionsRef.current[index] = e.nativeEvent.layout.y;
               }}
             >
@@ -84,6 +99,7 @@ const TranscriptView: React.FC<TranscriptViewProps> = ({
                 words={segment.words}
                 speakerLabels={speakerLabels}
                 currentTime={currentTime}
+                segmentIndex={index}
                 onWordPress={seek}
                 isActiveSegment={isActiveSegment}
               />
@@ -93,6 +109,17 @@ const TranscriptView: React.FC<TranscriptViewProps> = ({
       </ScrollView>
     </View>
   );
+}
+
+// Main component that provides search context
+const TranscriptView: React.FC<TranscriptViewProps> = (props) => {
+  const segments = useMemo(() => formatTranscriptData(props.words), [props.words]);
+
+  return (
+    <SearchProvider transcriptSegments={segments}>
+      <TranscriptViewContent {...props} />
+    </SearchProvider>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -101,6 +128,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+    padding: 8,
   },
   contentContainer: {
     paddingRight: 2,
