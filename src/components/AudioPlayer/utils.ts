@@ -33,9 +33,9 @@ export function debounce<T extends (...args: any[]) => void>(
  */
 export const playbackRates = [
   { id: '1', value: 0.5, label: '0.5x' },
-  { id: '2', value: 1.0, label: '1.0x' },
+  { id: '2', value: 1.0, label: '1x' },
   { id: '3', value: 1.5, label: '1.5x' },
-  { id: '4', value: 2.0, label: '2.0x' },
+  { id: '4', value: 2.0, label: '2x' },
 ];
 
 /**

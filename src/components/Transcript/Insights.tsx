@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     contentText: {
         fontSize: 12,
         lineHeight: 24,
-        color: '#666',
+        color: '#111',
     },
     activeTabText: {
         fontWeight: '600',

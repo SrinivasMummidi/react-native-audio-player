@@ -58,7 +58,7 @@ export interface AudioPlayerContextType {
   stop: () => Promise<void>;
   seekTo: (position: number) => Promise<void>; // position in milliseconds
   toggleMute: () => Promise<void>;
-  cyclePlaybackSpeed: () => Promise<void>;
+  cyclePlaybackSpeed: (param: { id: string; value: number; label: string }) => void;
 }
 
 interface AudioPlayerProviderProps {
@@ -214,7 +214,7 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     player,
     volume,
     isMuted,
-    playbackSpeed,
+    playbackSpeed.value,
     onError,
     totalDuration,
     currentPosition,
@@ -263,31 +263,10 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     }
   }, [isMuted, volume, player]);
 
-  const cyclePlaybackSpeed = useCallback(async () => {
-    const currentIndex = playbackRates.findIndex(
-      rate => rate.id === playbackSpeed.id,
-    );
-    const nextIndex = (currentIndex + 1) % playbackRates.length;
-    const nextSpeed = playbackRates[nextIndex];
-
-    setPlaybackSpeed(nextSpeed);
-
-    // Try to apply the new speed if playing
-    if (isPlaying) {
-      try {
-        if ((player as any).setPlaybackSpeed) {
-          await (player as any).setPlaybackSpeed(nextSpeed.value);
-        } else if ((player as any).setRate) {
-          await (player as any).setRate(nextSpeed.value);
-        } else if ((player as any).setSpeed) {
-          await (player as any).setSpeed(nextSpeed.value);
-        }
-        console.log(`Changed playback speed to: ${nextSpeed.value}x`);
-      } catch (err) {
-        console.warn('Speed change not supported:', err);
-      }
-    }
-  }, [playbackSpeed, isPlaying, player]);
+  const cyclePlaybackSpeed = async (speed: { id: string; value: number; label: string }) => {
+    setPlaybackSpeed(speed);
+    await applyPlaybackSpeedToPlayer(speed.value);
+  };
 
   // Cleanup on unmount
   useEffect(() => {
