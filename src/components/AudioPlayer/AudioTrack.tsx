@@ -1,9 +1,8 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Slider } from 'react-native-awesome-slider';
 import { useSharedValue } from 'react-native-reanimated';
 import { useAudioPlayer } from './AudioPlayerContext';
-import { calculateProgress, calculatePosition } from './utils';
 
 interface AudioTrackProps {
   height?: number;
@@ -20,32 +19,55 @@ export const AudioTrack: React.FC<AudioTrackProps> = ({
   thumbColor = '#111',
   containerStyle,
 }) => {
-  const { currentPosition, totalDuration, seekTo, isReady } = useAudioPlayer();
+  const {
+    currentPosition,
+    totalDuration,
+    seekTo,
+    isReady,
+    setIsSliding,
+    setPreviewPosition,
+  } = useAudioPlayer();
+  const isUserInteracting = useRef(false);
 
-  // Calculate progress percentage
-  const progressPercentage = useMemo(
-    () => calculateProgress(currentPosition, totalDuration),
-    [currentPosition, totalDuration],
-  );
-
-  // Shared values for the slider
-  const progress = useSharedValue(progressPercentage);
+  const progress = useSharedValue(currentPosition);
   const min = useSharedValue(0);
-  const max = useSharedValue(100);
+  const max = useSharedValue(totalDuration);
 
-  // Update progress when currentPosition changes
-  React.useEffect(() => {
-    progress.value = progressPercentage;
-  }, [progressPercentage, progress]);
+  useEffect(() => {
+    if (!isUserInteracting.current) {
+      progress.value = currentPosition;
+    }
+  }, [currentPosition, progress]);
+
+  useEffect(() => {
+    max.value = totalDuration;
+  }, [totalDuration, max]);
+
+  const handleSlidingStart = useCallback(() => {
+    isUserInteracting.current = true;
+    setIsSliding(true);
+  }, [setIsSliding]);
 
   const handleValueChange = useCallback(
     (value: number) => {
-      if (totalDuration > 0) {
-        const newPosition = calculatePosition(value, totalDuration);
-        seekTo(newPosition);
+      if (isUserInteracting.current) {
+        setPreviewPosition(value);
       }
     },
-    [totalDuration, seekTo],
+    [setPreviewPosition],
+  );
+
+  const handleSlidingComplete = useCallback(
+    async (value: number) => {
+      isUserInteracting.current = false;
+      if (totalDuration > 0) {
+        // Don't disable sliding until after seek completes to avoid flicker
+        await seekTo(value);
+      }
+      // Now it's safe to disable sliding since position is updated
+      setIsSliding(false);
+    },
+    [totalDuration, seekTo, setIsSliding],
   );
 
   return (
@@ -64,7 +86,9 @@ export const AudioTrack: React.FC<AudioTrackProps> = ({
           bubbleBackgroundColor: progressColor,
           heartbeatColor: thumbColor,
         }}
-        onSlidingComplete={handleValueChange}
+        onSlidingStart={handleSlidingStart}
+        onValueChange={handleValueChange}
+        onSlidingComplete={handleSlidingComplete}
         containerStyle={[
           styles.sliderContainer,
           { height: Math.max(6, height + 4) },
@@ -87,10 +111,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: 3,
     borderRadius: 2,
-  },
-  trackPlaceholder: {
-    backgroundColor: '#ddd',
-    borderRadius: 2,
-    marginHorizontal: 8,
   },
 });

@@ -33,6 +33,10 @@ export interface AudioPlayerContextType {
   // Audio source
   audioUrl: string | null;
 
+  // Slider interaction state
+  isSliding: boolean;
+  previewPosition: number; // Position while sliding (in milliseconds)
+
   // Error handling
   error: string | null;
 
@@ -51,6 +55,8 @@ export interface AudioPlayerContextType {
   }) => void;
   setAudioUrl: (url: string | null) => void;
   setError: (error: string | null) => void;
+  setIsSliding: (sliding: boolean) => void;
+  setPreviewPosition: (position: number) => void;
 
   // Player methods
   play: () => Promise<void>;
@@ -96,6 +102,8 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     defaultAudioUrl || null,
   );
   const [error, setError] = useState<string | null>(null);
+  const [isSliding, setIsSliding] = useState(false);
+  const [previewPosition, setPreviewPosition] = useState(0);
 
   // Refs for cleanup
   const isCleanedUpRef = useRef(false);
@@ -368,6 +376,8 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     isMuted,
     playbackSpeed,
     audioUrl,
+    isSliding,
+    previewPosition,
     error,
     setIsPlaying,
     setIsLoading,
@@ -379,6 +389,8 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     setPlaybackSpeed,
     setAudioUrl,
     setError,
+    setIsSliding,
+    setPreviewPosition,
     play,
     pause,
     stop,

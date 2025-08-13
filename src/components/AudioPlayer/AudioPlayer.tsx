@@ -17,6 +17,7 @@ interface BaseAudioPlayerProps {
   // Component visibility
   showPlaybackSpeed?: boolean;
   showTotalTime?: boolean; // Shows countdown timer (remaining time)
+  showCurrentTime?: boolean; // Shows current playback time
 
   // Color customization
   primaryColor?: string;
@@ -55,9 +56,20 @@ export const AudioPlayerContent: React.FC<
   playButtonSize = 20,
   showErrorText = true,
   showTotalTime = false,
+  showCurrentTime = false,
   sourceLoading = false,
 }) => {
-  const { error, currentPosition, totalDuration, isReady } = useAudioPlayer();
+  const {
+    error,
+    currentPosition,
+    totalDuration,
+    isReady,
+    isSliding,
+    previewPosition,
+  } = useAudioPlayer();
+
+  // Show preview position when sliding, otherwise show actual position
+  const displayPosition = isSliding ? previewPosition : currentPosition;
 
   return (
     <View
@@ -84,6 +96,12 @@ export const AudioPlayerContent: React.FC<
           disabled={!isReady}
         />
 
+        {showCurrentTime && (
+          <Text style={[styles.timeText, { color: secondaryColor }]}>
+            {formatTime(Math.floor(displayPosition / 1000))}
+          </Text>
+        )}
+
         <View style={styles.trackContainer}>
           <AudioTrack
             height={2}
@@ -97,7 +115,7 @@ export const AudioPlayerContent: React.FC<
         {showTotalTime && (
           <Text style={[styles.timeText, { color: secondaryColor }]}>
             {formatTime(
-              Math.floor(Math.max(0, totalDuration - currentPosition) / 1000),
+              Math.floor(Math.max(0, totalDuration - displayPosition) / 1000),
             )}
           </Text>
         )}
