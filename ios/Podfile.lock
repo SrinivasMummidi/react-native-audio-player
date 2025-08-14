@@ -2185,6 +2185,35 @@ PODS:
     - SocketRocket
   - RNAudioRecorderPlayer (3.6.14):
     - React-Core
+  - RNCAsyncStorage (2.2.0):
+    - boost
+    - DoubleConversion
+    - fast_float
+    - fmt
+    - glog
+    - hermes-engine
+    - RCT-Folly
+    - RCT-Folly/Fabric
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-hermes
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - SocketRocket
+    - Yoga
   - RNCClipboard (1.16.3):
     - boost
     - DoubleConversion
@@ -2531,6 +2560,7 @@ DEPENDENCIES:
   - ReactCodegen (from `build/generated/ios`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - RNAudioRecorderPlayer (from `../node_modules/react-native-audio-recorder-player`)
+  - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
@@ -2692,6 +2722,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNAudioRecorderPlayer:
     :path: "../node_modules/react-native-audio-recorder-player"
+  RNCAsyncStorage:
+    :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCClipboard:
     :path: "../node_modules/@react-native-clipboard/clipboard"
   RNGestureHandler:
@@ -2778,6 +2810,7 @@ SPEC CHECKSUMS:
   ReactCodegen: 08105625e801766da74078b4b122c16d539d6872
   ReactCommon: 4c7015a078757bb1f3032df5f75dd61b2121f297
   RNAudioRecorderPlayer: b5ed41ccfe72a211a870bfe09ab36c046eb27d2a
+  RNCAsyncStorage: f30b3a83064e28b0fc46f1fbd3834589ed64c7b9
   RNCClipboard: 8e5237c79dafacea5b7adf4c3ab39a4236b5ef7e
   RNGestureHandler: a52292df4f8fc7daab354ad2c37be401d4c3bed8
   RNReanimated: e2aba9f6bcd039749ae12e7a88852678623e1fa0
