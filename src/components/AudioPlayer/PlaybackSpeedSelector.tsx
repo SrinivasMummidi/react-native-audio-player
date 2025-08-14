@@ -18,7 +18,7 @@ export const PlaybackSpeedSelector: React.FC<PlaybackSpeedSelectorProps> = ({
   borderColor = 'transparent',
   fontSize = 12,
   paddingHorizontal = 8,
-  paddingVertical = 4,
+  paddingVertical = 0,
   borderRadius = 6,
 }) => {
   const { playbackSpeed, cyclePlaybackSpeed } = useAudioPlayer();
@@ -89,11 +89,14 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     justifyContent: 'center',
     alignItems: 'center',
+    minWidth: 32,
+    height: 24,
   },
   text: {
     fontSize: 12,
     color: '#666',
     fontVariant: ['tabular-nums'],
+    textAlign: 'center',
   },
   verticalAlignText: {
     textAlignVertical: 'center',

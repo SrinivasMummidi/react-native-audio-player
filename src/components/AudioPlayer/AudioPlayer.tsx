@@ -52,7 +52,7 @@ export const AudioPlayerContent: React.FC<
   primaryColor = '#9ca3af',
   secondaryColor = '#6b7280',
   textColor = '#374151',
-  height = 50,
+  height = 42,
   playButtonSize = 20,
   showErrorText = true,
   showTotalTime = false,

@@ -362,7 +362,9 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     label: string;
   }) => {
     setPlaybackSpeed(speed);
-    await applyPlaybackSpeedToPlayer(speed.value);
+    if (isPlaying) {
+      await applyPlaybackSpeedToPlayer(speed.value);
+    }
   };
 
   // Cleanup on unmount
