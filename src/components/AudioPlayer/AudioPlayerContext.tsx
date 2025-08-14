@@ -199,6 +199,7 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
             setIsPlaying(false);
             currentTimeRef.current = 0;
             setCurrentPosition(0);
+            hasBeenStartedRef.current = false; // Reset so next play() starts fresh
             player.stopPlayer().catch(() => { });
             player.removePlayBackListener();
           }
@@ -252,6 +253,7 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
           setIsPlaying(false);
           currentTimeRef.current = 0;
           setCurrentPosition(0);
+          hasBeenStartedRef.current = false; // Reset so next play() starts fresh
           player.stopPlayer().catch(() => { });
           player.removePlayBackListener();
         }
