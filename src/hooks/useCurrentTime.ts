@@ -18,18 +18,24 @@ export const useCurrentTime = () => {
   const currentTimeSeconds = reactiveTime / 1000;
 
   // Helper function to check if current time is within a range
-  const isInRange = useCallback((startTime: number, endTime: number) => {
-    return currentTimeSeconds >= startTime && currentTimeSeconds <= endTime;
-  }, [currentTimeSeconds]);
+  const isInRange = useCallback(
+    (startTime: number, endTime: number) => {
+      return currentTimeSeconds >= startTime && currentTimeSeconds <= endTime;
+    },
+    [currentTimeSeconds],
+  );
 
   // Seek function that provides immediate updates
-  const seek = useCallback((timeInSeconds: number) => {
-    const timeInMs = timeInSeconds * 1000;
-    // Update reactive state immediately for UI feedback
-    setReactiveTime(timeInMs);
-    // Perform actual seek
-    seekTo(timeInMs);
-  }, [seekTo]);
+  const seek = useCallback(
+    (timeInSeconds: number) => {
+      const timeInMs = timeInSeconds * 1000;
+      // Update reactive state immediately for UI feedback
+      setReactiveTime(timeInMs);
+      // Perform actual seek
+      seekTo(timeInMs);
+    },
+    [seekTo],
+  );
 
   return {
     currentTime: currentTimeSeconds,

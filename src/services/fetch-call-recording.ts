@@ -25,52 +25,67 @@ type CachedRecording = {
 async function cleanupExpiredRecordings() {
   const indexData = await AsyncStorage.getItem(RECORDING_CACHE_INDEX_KEY);
   if (!indexData) return;
-  
+
   const cacheIndex: Record<string, number> = JSON.parse(indexData);
   const now = Date.now();
   const validEntries: Record<string, number> = {};
-  
+
   for (const [connectionId, cachedAt] of Object.entries(cacheIndex)) {
-    const cached = await AsyncStorage.getItem(`${RECORDING_CACHE_PREFIX}${connectionId}`);
+    const cached = await AsyncStorage.getItem(
+      `${RECORDING_CACHE_PREFIX}${connectionId}`,
+    );
     if (cached) {
       const { data }: CachedRecording = JSON.parse(cached);
       if (data.expiryTime > now) {
         validEntries[connectionId] = cachedAt;
       } else {
-        await AsyncStorage.removeItem(`${RECORDING_CACHE_PREFIX}${connectionId}`);
+        await AsyncStorage.removeItem(
+          `${RECORDING_CACHE_PREFIX}${connectionId}`,
+        );
       }
     }
   }
-  
+
   // Remove old entries if still over limit
   const entries = Object.entries(validEntries);
   if (entries.length > MAX_RECORDING_CACHE_SIZE) {
     const toRemove = entries
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .slice(MAX_RECORDING_CACHE_SIZE);
-    
+
     for (const [id] of toRemove) {
       await AsyncStorage.removeItem(`${RECORDING_CACHE_PREFIX}${id}`);
       delete validEntries[id];
     }
   }
-  
-  await AsyncStorage.setItem(RECORDING_CACHE_INDEX_KEY, JSON.stringify(validEntries));
+
+  await AsyncStorage.setItem(
+    RECORDING_CACHE_INDEX_KEY,
+    JSON.stringify(validEntries),
+  );
 }
 
-async function saveToCacheWithExpiry(connectionId: string, data: CallRecordingResponse) {
+async function saveToCacheWithExpiry(
+  connectionId: string,
+  data: CallRecordingResponse,
+) {
   const cacheKey = `${RECORDING_CACHE_PREFIX}${connectionId}`;
   const cachedAt = Date.now();
-  
+
   const indexData = await AsyncStorage.getItem(RECORDING_CACHE_INDEX_KEY);
-  const cacheIndex: Record<string, number> = indexData ? JSON.parse(indexData) : {};
+  const cacheIndex: Record<string, number> = indexData
+    ? JSON.parse(indexData)
+    : {};
   cacheIndex[connectionId] = cachedAt;
-  
+
   const cachedRecording: CachedRecording = { data, cachedAt };
-  
+
   await AsyncStorage.setItem(cacheKey, JSON.stringify(cachedRecording));
-  await AsyncStorage.setItem(RECORDING_CACHE_INDEX_KEY, JSON.stringify(cacheIndex));
-  
+  await AsyncStorage.setItem(
+    RECORDING_CACHE_INDEX_KEY,
+    JSON.stringify(cacheIndex),
+  );
+
   setTimeout(() => cleanupExpiredRecordings().catch(console.warn), 0);
 }
 
@@ -85,7 +100,9 @@ export const fetchCallRecordingUrl = async ({
 }: CallRecordingParams): Promise<CallRecordingResponse> => {
   // Check cache first
   try {
-    const cached = await AsyncStorage.getItem(`${RECORDING_CACHE_PREFIX}${connectionId}`);
+    const cached = await AsyncStorage.getItem(
+      `${RECORDING_CACHE_PREFIX}${connectionId}`,
+    );
     if (cached) {
       const { data }: CachedRecording = JSON.parse(cached);
       if (data.expiryTime > Date.now()) {
@@ -104,7 +121,7 @@ export const fetchCallRecordingUrl = async ({
     const baseURL = isProduction(mode)
       ? INBOUND_BASE_URLS_LIVE[brandId]
       : INBOUND_BASE_URLS_STAGING[brandId];
-      // inbox team url
+    // inbox team url
     const url = `${baseURL}/v3/services/aws/getCallRecording/connectionId/${connectionId}?uniquePin=${
       uniquePin ?? ''
     }&messageSavedTime=${messageSavedTime ?? ''}`;
@@ -121,13 +138,13 @@ export const fetchCallRecordingUrl = async ({
       );
     const data = await response.json();
     const result = data as CallRecordingResponse;
-    
+
     try {
       await saveToCacheWithExpiry(connectionId, result);
     } catch (error) {
       console.warn('Error saving recording to cache:', error);
     }
-    
+
     return result;
   }
 
@@ -154,13 +171,13 @@ export const fetchCallRecordingUrl = async ({
       data: (data.data ?? data.signedURL) as string,
       expiryTime: (data.expiryTime as number) || Date.now() + 30 * 60 * 1000,
     };
-    
+
     try {
       await saveToCacheWithExpiry(connectionId, result);
     } catch (error) {
       console.warn('Error saving recording to cache:', error);
     }
-    
+
     return result;
   }
 

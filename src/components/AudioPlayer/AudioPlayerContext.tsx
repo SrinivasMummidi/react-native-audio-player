@@ -12,6 +12,7 @@ import AudioRecorderPlayer, {
 } from 'react-native-audio-recorder-player';
 import { playbackRates } from './utils';
 import { useAutoScroll } from '../../context/AutoScrollContext';
+
 export interface AudioPlayerContextType {
   // Player instance
   player: AudioRecorderPlayer;
@@ -90,7 +91,6 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
   // Create stable player instance
   const playerRef = useRef(new AudioRecorderPlayer());
   const player = playerRef.current;
-
   // State
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -206,11 +206,12 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
         });
 
         // Resume existing playback session
-        await player.setVolume(isMuted ? 0 : volume / 100).catch(() => { });
+        await player.setVolume(isMuted ? 0 : volume / 100).catch(() => {});
         await player.resumePlayer();
 
         // Sync player to ref position in case they differ
-        if (Math.abs(currentPosition - currentTimeRef.current) > 1000) { // 1 second tolerance
+        if (Math.abs(currentPosition - currentTimeRef.current) > 1000) {
+          // 1 second tolerance
           try {
             await player.seekToPlayer(currentTimeRef.current);
             setCurrentPosition(currentTimeRef.current);
@@ -369,7 +370,7 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     return () => {
       if (!isCleanedUpRef.current) {
         isCleanedUpRef.current = true;
-        player.stopPlayer().catch(() => { });
+        player.stopPlayer().catch(() => {});
         player.removePlayBackListener();
         currentTimeRef.current = 0;
         hasBeenStartedRef.current = false;
@@ -388,7 +389,7 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
         try {
           await player.stopPlayer();
           player.removePlayBackListener();
-        } catch { }
+        } catch {}
 
         const listener = (e: PlayBackType) => {
           if (e.duration && e.duration > 0 && !gotDuration) {
@@ -397,7 +398,8 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
             currentTimeRef.current = 0;
             setCurrentPosition(0);
             setIsReady(true);
-            player.stopPlayer().catch(() => { });
+            player.stopPlayer().catch(() => {});
+            setIsLoading(false);
             player.removePlayBackListener();
           }
         };
@@ -407,8 +409,9 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
         // Mute during probe to avoid audible blip
         try {
           await player.setVolume(0);
-        } catch { }
+        } catch {}
       } catch (err) {
+        setIsLoading(false);
         // Leave isReady as-is; play() can still establish duration
       }
     },
@@ -421,7 +424,7 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     if (nextUrl !== audioUrl) {
       // Stop any ongoing playback before switching URL
       if (isPlaying) {
-        player.stopPlayer().catch(() => { });
+        player.stopPlayer().catch(() => {});
         player.removePlayBackListener();
         setIsPlaying(false);
       }

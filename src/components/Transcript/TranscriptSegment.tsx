@@ -42,6 +42,26 @@ interface TranscriptSegmentProps {
   isPlaying: boolean;
 }
 
+const formatSpeakerLabel = (
+  speakerId: string,
+  speakerLabels: SpeakerLabels,
+) => {
+  // Parse speaker number from ID (e.g., "speaker_0" -> "SPEAKER 1")
+  const speakerNumber = parseInt(speakerId.replace('speaker_', ''), 10) + 1;
+  let label = `SPEAKER ${speakerNumber}`;
+
+  const speaker = speakerLabels[speakerId];
+  if (speaker) {
+    if (speaker.type === 'caller') {
+      label = speaker.name || speaker.type;
+    } else {
+      label = speaker.type;
+    }
+  }
+
+  return label.charAt(0).toUpperCase() + label.slice(1);
+};
+
 const TranscriptSegment: React.FC<TranscriptSegmentProps> = ({
   speakerId,
   words,
@@ -51,14 +71,11 @@ const TranscriptSegment: React.FC<TranscriptSegmentProps> = ({
   onWordPress,
   isPlaying,
 }) => {
-  const speaker = speakerLabels[speakerId];
-  const speakerName = speaker?.name || speaker?.type || speakerId;
+  const speakerName = formatSpeakerLabel(speakerId, speakerLabels);
   return (
     <View style={styles.segmentContainer}>
       <View style={styles.speakerHeader}>
-        <Text style={styles.speakerName}>
-          {speakerName.charAt(0).toUpperCase() + speakerName.slice(1)}
-        </Text>
+        <Text style={styles.speakerName}>{speakerName}</Text>
       </View>
       <View style={styles.wordsContainer}>
         {words.map((word, index) => {

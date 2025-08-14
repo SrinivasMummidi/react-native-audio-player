@@ -19,9 +19,7 @@ export const AutoScrollProvider: React.FC<AutoScrollProviderProps> = ({
   const [autoSync, setAutoSync] = useState(true);
 
   return (
-    <AutoScrollContext.Provider
-      value={{ autoSync, setAutoSync }}
-    >
+    <AutoScrollContext.Provider value={{ autoSync, setAutoSync }}>
       {children}
     </AutoScrollContext.Provider>
   );
