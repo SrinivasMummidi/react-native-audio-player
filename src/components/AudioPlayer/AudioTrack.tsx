@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Slider } from 'react-native-awesome-slider';
 import { useSharedValue } from 'react-native-reanimated';
 import { useAudioPlayer } from './AudioPlayerContext';
+import { useCurrentTime } from '../../hooks/useCurrentTime';
 
 interface AudioTrackProps {
   height?: number;
@@ -20,24 +21,25 @@ export const AudioTrack: React.FC<AudioTrackProps> = ({
   containerStyle,
 }) => {
   const {
-    currentPosition,
     totalDuration,
     seekTo,
     isReady,
     setIsSliding,
     setPreviewPosition,
   } = useAudioPlayer();
+  const { currentTimeMs } = useCurrentTime();
   const isUserInteracting = useRef(false);
 
-  const progress = useSharedValue(currentPosition);
+  const progress = useSharedValue(currentTimeMs);
   const min = useSharedValue(0);
   const max = useSharedValue(totalDuration);
 
+  // Update progress from reactive current time
   useEffect(() => {
     if (!isUserInteracting.current) {
-      progress.value = currentPosition;
+      progress.value = currentTimeMs;
     }
-  }, [currentPosition, progress]);
+  }, [currentTimeMs, progress]);
 
   useEffect(() => {
     max.value = totalDuration;

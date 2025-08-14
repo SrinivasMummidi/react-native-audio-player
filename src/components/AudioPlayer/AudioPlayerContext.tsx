@@ -25,6 +25,9 @@ export interface AudioPlayerContextType {
   currentPosition: number; // in milliseconds
   totalDuration: number; // in milliseconds
 
+  // Refs for immediate access (useful for transcript highlighting)
+  currentTimeRef: React.MutableRefObject<number>;
+
   // Audio settings
   volume: number; // 0-100
   isMuted: boolean;
@@ -106,8 +109,12 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
   const [previewPosition, setPreviewPosition] = useState(0);
   const { setAutoSync } = useAutoScroll();
 
-  // Refs for cleanup
+  // Refs for cleanup and position tracking
   const isCleanedUpRef = useRef(false);
+  // Single source of truth for current position - updates immediately on seeks
+  const currentTimeRef = useRef(0);
+  // Track if player has been started at least once
+  const hasBeenStartedRef = useRef(false);
 
   const setVolume = useCallback(
     async (newVolume: number) => {
@@ -162,12 +169,55 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
       // If we have a known duration and a non-zero position (and not finished), prefer resuming
       const canResume =
         totalDuration > 0 &&
-        currentPosition > 0 &&
-        currentPosition < totalDuration;
+        currentTimeRef.current > 0 &&
+        currentTimeRef.current < totalDuration &&
+        hasBeenStartedRef.current;
+
       if (canResume) {
-        // Resume existing playback session without tearing down listeners
-        await player.setVolume(isMuted ? 0 : volume / 100).catch(() => {});
+        // Ensure listener is active before resuming (prevents update issues)
+        try {
+          player.removePlayBackListener();
+        } catch {
+          // Ignore if no listener was attached
+        }
+
+        // Re-attach listener for reliable updates
+        player.addPlayBackListener((e: PlayBackType) => {
+          // Always update ref and state from player position updates
+          currentTimeRef.current = e.currentPosition;
+          setCurrentPosition(e.currentPosition);
+
+          if (e.duration > 0) {
+            setTotalDuration(e.duration);
+          }
+
+          // Stop buffering when we start getting position updates
+          if (e.currentPosition > 0) setIsBuffering(false);
+
+          // Handle end of playback
+          if (e.duration > 0 && e.currentPosition >= e.duration) {
+            setIsPlaying(false);
+            currentTimeRef.current = 0;
+            setCurrentPosition(0);
+            player.stopPlayer().catch(() => { });
+            player.removePlayBackListener();
+          }
+        });
+
+        // Resume existing playback session
+        await player.setVolume(isMuted ? 0 : volume / 100).catch(() => { });
         await player.resumePlayer();
+
+        // Sync player to ref position in case they differ
+        if (Math.abs(currentPosition - currentTimeRef.current) > 1000) { // 1 second tolerance
+          try {
+            await player.seekToPlayer(currentTimeRef.current);
+            setCurrentPosition(currentTimeRef.current);
+          } catch (err) {
+            console.warn('Failed to sync position on resume:', err);
+          }
+        }
+
         await applyPlaybackSpeedToPlayer(playbackSpeed.value);
         setIsPlaying(true);
         setIsLoading(false);
@@ -185,7 +235,11 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
 
       // Add playback listener (fresh)
       player.addPlayBackListener((e: PlayBackType) => {
+        // Always update ref and state from player position updates
+        // The player only sends updates when it's actually playing
+        currentTimeRef.current = e.currentPosition;
         setCurrentPosition(e.currentPosition);
+
         if (e.duration > 0) {
           setTotalDuration(e.duration);
         }
@@ -196,18 +250,29 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
         // Handle end of playback
         if (e.duration > 0 && e.currentPosition >= e.duration) {
           setIsPlaying(false);
+          currentTimeRef.current = 0;
           setCurrentPosition(0);
-          player.stopPlayer().catch(() => {});
+          player.stopPlayer().catch(() => { });
           player.removePlayBackListener();
         }
       });
 
-      // Start playback from beginning
+      // Start playback
       await player.startPlayer(audioUrl);
+      hasBeenStartedRef.current = true;
+
+      // Sync player to ref position if user has seeked before playing
+      if (currentTimeRef.current > 0) {
+        try {
+          await player.seekToPlayer(currentTimeRef.current);
+          setCurrentPosition(currentTimeRef.current);
+        } catch (err) {
+          console.warn('Failed to sync initial position:', err);
+        }
+      }
 
       // Apply current settings
       await player.setVolume(isMuted ? 0 : volume / 100);
-
       await applyPlaybackSpeedToPlayer(playbackSpeed.value);
 
       setIsPlaying(true);
@@ -248,7 +313,9 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
       await player.stopPlayer();
       player.removePlayBackListener();
       setIsPlaying(false);
+      currentTimeRef.current = 0;
       setCurrentPosition(0);
+      hasBeenStartedRef.current = false;
     } catch (err) {
       console.warn('Failed to stop:', err);
     }
@@ -256,13 +323,22 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
 
   const seekTo = useCallback(
     async (position: number) => {
-      try {
-        await player.seekToPlayer(position);
-        setCurrentPosition(position);
-        setAutoSync(true);
-      } catch (err) {
-        console.warn('Failed to seek:', err);
+      // Update ref immediately (source of truth for UI)
+      currentTimeRef.current = position;
+
+      // Update UI state immediately for responsive feedback
+      setCurrentPosition(position);
+      setAutoSync(true);
+
+      // Try to seek player if it has been started, but don't block UI
+      if (hasBeenStartedRef.current) {
+        try {
+          await player.seekToPlayer(position);
+        } catch (err) {
+          console.warn('Seek failed, will apply on next play:', err);
+        }
       }
+      // If player hasn't started, position will be applied when play() is called
     },
     [player, setAutoSync],
   );
@@ -291,8 +367,10 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     return () => {
       if (!isCleanedUpRef.current) {
         isCleanedUpRef.current = true;
-        player.stopPlayer().catch(() => {});
+        player.stopPlayer().catch(() => { });
         player.removePlayBackListener();
+        currentTimeRef.current = 0;
+        hasBeenStartedRef.current = false;
       }
     };
   }, [player]);
@@ -308,15 +386,16 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
         try {
           await player.stopPlayer();
           player.removePlayBackListener();
-        } catch {}
+        } catch { }
 
         const listener = (e: PlayBackType) => {
           if (e.duration && e.duration > 0 && !gotDuration) {
             gotDuration = true;
             setTotalDuration(e.duration);
+            currentTimeRef.current = 0;
             setCurrentPosition(0);
             setIsReady(true);
-            player.stopPlayer().catch(() => {});
+            player.stopPlayer().catch(() => { });
             player.removePlayBackListener();
           }
         };
@@ -326,7 +405,7 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
         // Mute during probe to avoid audible blip
         try {
           await player.setVolume(0);
-        } catch {}
+        } catch { }
       } catch (err) {
         // Leave isReady as-is; play() can still establish duration
       }
@@ -340,15 +419,17 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     if (nextUrl !== audioUrl) {
       // Stop any ongoing playback before switching URL
       if (isPlaying) {
-        player.stopPlayer().catch(() => {});
+        player.stopPlayer().catch(() => { });
         player.removePlayBackListener();
         setIsPlaying(false);
       }
+      currentTimeRef.current = 0;
       setCurrentPosition(0);
       setTotalDuration(0);
       setIsReady(false);
       setError(null);
       setAudioUrl(nextUrl);
+      hasBeenStartedRef.current = false;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultAudioUrl]);
@@ -374,6 +455,7 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     isReady,
     currentPosition,
     totalDuration,
+    currentTimeRef,
     volume,
     isMuted,
     playbackSpeed,

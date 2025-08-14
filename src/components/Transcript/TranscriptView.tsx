@@ -3,7 +3,7 @@ import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { SpeakerLabels, Word } from '../../types/types';
 import TranscriptSegmentComponent from './TranscriptSegment';
 import { formatTranscriptData } from '../../utils/transcriptUtils';
-import { useTranscriptAudio } from '../../hooks/useTranscriptAudio';
+import { useCurrentTime } from '../../hooks/useCurrentTime';
 import { useAudioPlayer } from '../AudioPlayer/AudioPlayerContext';
 import { SearchProvider, useSearch } from '../../context/SearchContext';
 import { useAutoScroll } from '../../context/AutoScrollContext';
@@ -23,7 +23,7 @@ const TranscriptViewContent: React.FC<TranscriptViewProps> = ({
   const scrollViewRef = useRef<ScrollView>(null);
   const rowPositionsRef = useRef<number[]>([]);
 
-  const { currentTime, seek } = useTranscriptAudio();
+  const { currentTime, seek } = useCurrentTime();
   const { isPlaying } = useAudioPlayer();
   const { searchState } = useSearch();
   const { autoSync } = useAutoScroll();
