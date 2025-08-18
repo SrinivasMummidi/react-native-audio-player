@@ -159,8 +159,9 @@ export async function fetchInsightsNative(
     });
 
     if (!response.ok) {
+      const errorBody = await response.text().catch(() => 'Unknown error');
       throw new Error(
-        `Insights API request failed: ${response.status} ${response.statusText}`,
+        `Insights API request failed: ${response.status} ${response.statusText}${errorBody ? ` - ${errorBody}` : ''}`,
       );
     }
 
@@ -207,9 +208,15 @@ export async function fetchInsightsNative(
       speakerLabels,
     };
   } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(`Failed to fetch insights: ${error.message}`);
+    console.error('Error in fetchInsightsNative:', error);
+    
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Unable to connect to insights service. Please check your internet connection.');
+    } else if (error instanceof Error) {
+      // If it's already a detailed error (like from the response.ok check), throw as-is
+      throw error;
+    } else {
+      throw new Error('Failed to fetch insights: Unknown error occurred');
     }
-    throw new Error('Failed to fetch insights: Unknown error');
   }
 }

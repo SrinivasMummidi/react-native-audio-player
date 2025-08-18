@@ -53,7 +53,7 @@ async function fetchInsights({
 }: {
   connectionId: string;
   getAccessToken: () => Promise<string>;
-}): Promise<MockResponseData | undefined> {
+}): Promise<MockResponseData> {
   // Return cached result if present
   try {
     const cached = await AsyncStorage.getItem(`${CACHE_PREFIX}${connectionId}`);
@@ -71,15 +71,16 @@ async function fetchInsights({
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessToken}testtttttt`,
         },
         body: JSON.stringify({ components: ['transcript', 'summary'] }),
       },
     );
 
     if (!result.ok) {
+      const errorBody = await result.text().catch(() => 'Unknown error');
       throw new Error(
-        `Error fetching insights: ${result.statusText} (${result.status})`,
+        `Error fetching insights: ${result.status} ${result.statusText}${errorBody ? ` - ${errorBody}` : ''}`,
       );
     }
 
@@ -92,7 +93,15 @@ async function fetchInsights({
     return data;
   } catch (error) {
     console.error('Error fetching insights:', error);
-    return undefined;
+    
+    // Enhanced error handling with more details
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Network error: Unable to connect to insights service. Please check your internet connection.');
+    } else if (error instanceof Error) {
+      throw error; // Re-throw the original error with its details
+    } else {
+      throw new Error('Failed to fetch insights: Unknown error occurred');
+    }
   }
 }
 

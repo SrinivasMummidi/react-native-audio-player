@@ -33,15 +33,38 @@ function Insights() {
   }, [transcriptData]);
 
   useEffect(() => {
-    try {
-      fetchInsights({ connectionId, getAccessToken }).then(data => {
+    const loadInsights = async () => {
+      try {
+        const data = await fetchInsights({ connectionId, getAccessToken });
         if (data) {
           setTranscriptData(data);
         }
-      });
-    } catch (error) {
-      console.error('Error loading transcript data:', error);
-    }
+      } catch (error) {
+        console.error('Error loading transcript data:', error);
+
+        let errorMessage = 'Failed to load insights';
+
+        if (error instanceof Error) {
+          errorMessage = error.message;
+        } else if (typeof error === 'object' && error !== null) {
+          // Handle fetch errors or other network errors
+          const errorObj = error as any;
+          if (errorObj.name === 'TypeError' && errorObj.message.includes('fetch')) {
+            errorMessage = 'Network error: Unable to connect to insights service';
+          } else {
+            errorMessage = errorObj.message || errorObj.toString() || 'Unknown error occurred';
+          }
+        }
+
+        if (Platform.OS === 'android') {
+          ToastAndroid.show(errorMessage, ToastAndroid.LONG);
+        } else {
+          Alert.alert('Error Loading Insights', errorMessage);
+        }
+      }
+    };
+
+    loadInsights();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connectionId]);
 

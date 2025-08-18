@@ -19,6 +19,7 @@ import { fetchCallRecordingUrl } from './src/services/fetch-call-recording';
 import { BRANDIDS } from './src/lib/constants';
 import { AutoScrollProvider } from './src/context/AutoScrollContext';
 import { AppEnv } from './src/types/types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type AppProps = {
   // Core config (match audio-transcript-player)
@@ -53,6 +54,7 @@ export default function App({
   const [isSummaryLoading] = React.useState(false);
 
   React.useEffect(() => {
+    AsyncStorage.clear();
     let mounted = true;
     (async () => {
       try {
