@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { MockResponseData } from '../types/types';
+import { formatTranscriptData } from '../utils/transcriptUtils';
 
 const CACHE_PREFIX = 'insights_cache_';
 const CACHE_INDEX_KEY = 'insights_cache_index';
@@ -85,6 +86,8 @@ async function fetchInsights({
     }
 
     const data = await result.json();
+    const segments = formatTranscriptData(data.data.transcript.data.words);
+    data.data.transcript.data.segments = segments;
     try {
       await saveToCacheWithLimit(connectionId, data);
     } catch (error) {

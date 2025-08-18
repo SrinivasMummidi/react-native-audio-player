@@ -160,8 +160,8 @@ function Insights() {
           >
             <View style={styles.transcriptContainer}>
               <TranscriptView
-                words={transcriptData.data.transcript.data.words}
                 speakerLabels={transcriptData.data.transcript.speakerLabels}
+                segments={transcriptData.data.transcript.data.segments || []}
                 onManualScroll={() => setAutoSync(false)}
               />
             </View>

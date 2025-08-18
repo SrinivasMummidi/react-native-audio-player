@@ -1,34 +1,35 @@
-import React, { useRef, useEffect, useMemo } from 'react';
+import React, { useRef, useEffect, useMemo, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
-import { SpeakerLabels, Word } from '../../types/types';
+import { SpeakerLabels, TranscriptSegment } from '../../types/types';
 import TranscriptSegmentComponent from './TranscriptSegment';
-import { formatTranscriptData } from '../../utils/transcriptUtils';
 import { useCurrentTime } from '../../hooks/useCurrentTime';
 import { useAudioPlayer } from '../AudioPlayer/AudioPlayerContext';
 import { SearchProvider, useSearch } from '../../context/SearchContext';
 import { useAutoScroll } from '../../context/AutoScrollContext';
 import SearchInput from '../Search/SearchInput';
+import LoadingSpinner from '../common/LoadingSpinner';
 
 interface TranscriptViewProps {
-  words: Word[];
   speakerLabels: SpeakerLabels;
   onManualScroll?: () => void;
+  segments: TranscriptSegment[];
 }
 
 const TranscriptViewContent: React.FC<TranscriptViewProps> = ({
-  words,
   speakerLabels,
   onManualScroll,
+  segments = [],
 }) => {
   const scrollViewRef = useRef<ScrollView>(null);
   const rowPositionsRef = useRef<number[]>([]);
-
+  const [isLoading, setIsLoading] = useState(true);
   const { currentTime, seek } = useCurrentTime();
   const { isPlaying } = useAudioPlayer();
   const { searchState } = useSearch();
   const { autoSync } = useAutoScroll();
-  const segments = useMemo(() => formatTranscriptData(words), [words]);
-
+  useEffect(()=>{
+    setIsLoading(false);
+  },[])
   // Find active segment based on current audio position
   const activeSegmentIndex = useMemo(() => {
     if (!segments.length || !currentTime) return -1;
@@ -81,6 +82,16 @@ const TranscriptViewContent: React.FC<TranscriptViewProps> = ({
     );
   }
   return (
+    
+    isLoading ? 
+     <View
+              style={[
+                styles.contentContainer,
+                styles.loadingSection,
+              ]}
+            >
+              <LoadingSpinner size={24} />
+            </View> :
     <View style={styles.container}>
       <SearchInput />
       <ScrollView
@@ -121,13 +132,9 @@ const TranscriptViewContent: React.FC<TranscriptViewProps> = ({
 
 // Main component that provides search context
 const TranscriptView: React.FC<TranscriptViewProps> = props => {
-  const segments = useMemo(
-    () => formatTranscriptData(props.words),
-    [props.words],
-  );
 
   return (
-    <SearchProvider transcriptSegments={segments}>
+    <SearchProvider transcriptSegments={props.segments}>
       <TranscriptViewContent {...props} />
     </SearchProvider>
   );
@@ -154,6 +161,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#666',
     textAlign: 'center',
+  },
+    loadingSection: {
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

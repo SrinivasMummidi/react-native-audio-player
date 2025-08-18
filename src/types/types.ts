@@ -24,6 +24,7 @@ export interface TranscriptData {
   text: string;
   words: Word[];
   additional_formats: null;
+  segments?: TranscriptSegment[];
 }
 
 export interface SpeakerLabel {
