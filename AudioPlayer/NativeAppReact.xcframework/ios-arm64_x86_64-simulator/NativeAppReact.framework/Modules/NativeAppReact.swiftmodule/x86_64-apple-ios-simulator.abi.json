@@ -1,0 +1,66 @@
+{
+  "ABIRoot": {
+    "kind": "Root",
+    "name": "NativeAppReact",
+    "printedName": "NativeAppReact",
+    "children": [
+      {
+        "kind": "Import",
+        "name": "ReactBrownfield",
+        "printedName": "ReactBrownfield",
+        "declKind": "Import",
+        "moduleName": "NativeAppReact",
+        "declAttributes": [
+          "Exported"
+        ]
+      },
+      {
+        "kind": "Var",
+        "name": "ReactNativeBundle",
+        "printedName": "ReactNativeBundle",
+        "children": [
+          {
+            "kind": "TypeNominal",
+            "name": "Bundle",
+            "printedName": "Foundation.Bundle",
+            "usr": "c:objc(cs)NSBundle"
+          }
+        ],
+        "declKind": "Var",
+        "usr": "s:14NativeAppReact0cA6BundleSo8NSBundleCvp",
+        "mangledName": "$s14NativeAppReact0cA6BundleSo8NSBundleCvp",
+        "moduleName": "NativeAppReact",
+        "declAttributes": [
+          "HasInitialValue",
+          "HasStorage",
+          "AccessControl"
+        ],
+        "isLet": true,
+        "hasStorage": true,
+        "accessors": [
+          {
+            "kind": "Accessor",
+            "name": "Get",
+            "printedName": "Get()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bundle",
+                "printedName": "Foundation.Bundle",
+                "usr": "c:objc(cs)NSBundle"
+              }
+            ],
+            "declKind": "Accessor",
+            "usr": "s:14NativeAppReact0cA6BundleSo8NSBundleCvg",
+            "mangledName": "$s14NativeAppReact0cA6BundleSo8NSBundleCvg",
+            "moduleName": "NativeAppReact",
+            "implicit": true,
+            "accessorKind": "get"
+          }
+        ]
+      }
+    ],
+    "json_format_version": 8
+  },
+  "ConstValues": []
+}

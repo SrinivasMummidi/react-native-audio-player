@@ -1,0 +1,6 @@
+framework module NativeAppReact {
+  umbrella header "NativeAppReact.h"
+  export *
+
+  module * { export * }
+}
