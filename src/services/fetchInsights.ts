@@ -67,7 +67,7 @@ async function fetchInsights({
   const accessToken = await getAccessToken();
   try {
     const result = await fetch(
-      `https://open-ai---call-evaluation-x3zonqmtmq-uc.a.run.app/api/v1/call/insights/${connectionId}`,
+      `https://backend.switchport.app/api/v1/call/insights/${connectionId}`,
       {
         method: 'POST',
         headers: {
