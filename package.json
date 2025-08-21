@@ -58,8 +58,8 @@
     "node": ">=18"
   },
   "codegenConfig": {
-    "name": "AudioPlayerSpec",
+    "name": "NativeCommunicationSpec",
     "type": "modules",
-    "jsSrcsDir": "src/modules/AudioPlayer"
+    "jsSrcsDir": "src/specs"
   }
 }

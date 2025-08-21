@@ -2807,7 +2807,7 @@ SPEC CHECKSUMS:
   React-utils: ab825b0a4f4f827b1b65db97926a5cd08c7a61a1
   ReactAppDependencyProvider: afd905e84ee36e1678016ae04d7370c75ed539be
   ReactBrownfield: 7baa66a9d7d8f01e5561a21647b6cfb67f95bf31
-  ReactCodegen: 7dc55398251687533b7697a97c34090d7cba10ca
+  ReactCodegen: d2cb24646795b9c8a4705d923ac11830aceb369a
   ReactCommon: 4c7015a078757bb1f3032df5f75dd61b2121f297
   RNAudioRecorderPlayer: b5ed41ccfe72a211a870bfe09ab36c046eb27d2a
   RNCAsyncStorage: f30b3a83064e28b0fc46f1fbd3834589ed64c7b9

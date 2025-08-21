@@ -6,8 +6,6 @@ import {
   Platform,
   Alert,
   ToastAndroid,
-  TouchableOpacity,
-  Text,
 } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import SummarizeButton from './src/components/CallRecording/SummarizeButton';
@@ -22,7 +20,7 @@ import { BRANDIDS } from './src/lib/constants';
 import { AutoScrollProvider } from './src/context/AutoScrollContext';
 import { AppEnv } from './src/types/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { TurboModuleTest } from './src/components/TurboModuleTest';
+import NativeCommunication from './src/specs/NativeCommunication';
 
 type AppProps = {
   // Core config (match audio-transcript-player)
@@ -50,12 +48,13 @@ export default function App({
     async () => accessToken,
     [accessToken],
   );
-
+  NativeCommunication?.processEvents('get-access-token').then(data => {
+    console.log('Access token received:', data);
+  });
   const [audioUrl, setAudioUrl] = React.useState<string | undefined>(undefined);
   const [, setError] = React.useState<string | null>(null);
   const [showSummaryPanel, setShowSummaryPanel] = React.useState(false);
   const [isSummaryLoading] = React.useState(false);
-  const [showTurboModuleTest, setShowTurboModuleTest] = React.useState(false);
 
   React.useEffect(() => {
     AsyncStorage.clear();
@@ -103,10 +102,6 @@ export default function App({
     setShowSummaryPanel(prev => !prev);
   }, []);
 
-  const handleTurboModuleTestToggle = React.useCallback(() => {
-    setShowTurboModuleTest(prev => !prev);
-  }, []);
-
   return (
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaView style={styles.root}>
@@ -138,16 +133,7 @@ export default function App({
                   onPress={handleSummaryToggle}
                   isLoading={isSummaryLoading}
                 />
-                <TouchableOpacity
-                  style={styles.testButton}
-                  onPress={handleTurboModuleTestToggle}
-                >
-                  <Text style={styles.testButtonText}>
-                    {showTurboModuleTest ? 'Hide' : 'Show'} Turbo Module Test
-                  </Text>
-                </TouchableOpacity>
                 {showSummaryPanel && <Insights />}
-                {showTurboModuleTest && <TurboModuleTest />}
               </TranscriptAudioPlayerProvider>
             </AudioPlayerProvider>
           </AutoScrollProvider>

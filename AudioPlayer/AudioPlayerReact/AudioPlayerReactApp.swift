@@ -17,27 +17,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-        
-        // 🏗️ iOS BEST PRACTICE: Initialize the service registry and register services
-        
-        // 1. Initialize the service registry (dependency injection container)
-        let serviceRegistry = TurboModuleServiceRegistry.shared
-        print("✅ [AppDelegate] Service registry initialized")
-        
-        // 2. Initialize and register audio player service
-        let audioPlayerManager = AudioPlayerManager.shared
-        print("✅ [AppDelegate] AudioPlayerManager initialized and registered with service registry")
-        
-        // 3. Verify service registration
-        if serviceRegistry.isAudioPlayerServiceAvailable() {
-            print("🚀 [AppDelegate] AudioPlayerService successfully registered and available")
-        } else {
-            print("❌ [AppDelegate] AudioPlayerService registration failed")
-        }
-        
-        print("📱 [AppDelegate] App bundle name: \(Bundle.main.bundleIdentifier ?? "unknown")")
-        
         // Initialize React Native Brownfield once, with launch options.
+        let serviceRegistery = CommunicationService.shared
         ReactNativeBrownfield.shared.bundle = ReactNativeBundle
         ReactNativeBrownfield.shared.startReactNative(onBundleLoaded: {
             print("React Native bundle loaded from AppDelegate")

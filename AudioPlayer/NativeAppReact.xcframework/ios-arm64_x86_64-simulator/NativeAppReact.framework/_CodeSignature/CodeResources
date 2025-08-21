@@ -10,15 +10,15 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		dZJKtzys67VUXitV2Pab+EQj9kU=
+		pWQ4kkj8V4Nxxn520XRtT1uRjsQ=
 		</data>
 		<key>Modules/NativeAppReact.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo</key>
 		<data>
-		ABPSagrCjD4LgMmNpgqyZRXL54k=
+		+JzDPlEHemvfZ5OQov5HfGAquxU=
 		</data>
 		<key>Modules/NativeAppReact.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
 		<data>
-		9ociluehKRJCdVP+CgXOboUj36I=
+		BYXiZWiQLi1v4rTiqHIcAGswLmA=
 		</data>
 		<key>Modules/NativeAppReact.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
@@ -38,7 +38,7 @@
 		</data>
 		<key>Modules/NativeAppReact.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		DRLJPP9FDbQVp/uMrg5TWuJlFCU=
+		HvqIv8fIeHMoV/4+eL5P73pGJMY=
 		</data>
 		<key>Modules/NativeAppReact.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
@@ -58,7 +58,7 @@
 		</data>
 		<key>Modules/NativeAppReact.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		P58tkE2DxjBWRRKgLuL3Wh0zDMk=
+		ZCfisdGXRwrl5biUjjXPx1mr1nw=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -114,7 +114,7 @@
 		</data>
 		<key>main.jsbundle</key>
 		<data>
-		RwzqFqRL+6+A7rOIh3N8ys9xQCE=
+		W3sP9uWUTV0yshpAtnKEYaLUxOg=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -130,14 +130,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			qEphFeoz5D1f84nxejBo0gI2GgYw/RU4dyfHdloytyQ=
+			eYoclrx4Z6qF9z83y+IX9CslJ/6WP4OpvoGG57mQaeI=
 			</data>
 		</dict>
 		<key>Modules/NativeAppReact.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			cwCxQZbLSBqpcjqiJTDDXi8Fp4PVBhmB0TGxanpPjyw=
+			dKSFCw+3Z3739THzvHvx07MeiENBMZI2HFisaRqTNb0=
 			</data>
 		</dict>
 		<key>Modules/NativeAppReact.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
@@ -172,7 +172,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			tw1RCSjGb3yhU5uetuaWC5pmTC649JT5uvB0KGp8G3k=
+			ciBfQs+uBggMxBlvz5uz4lo9XjxKWoKeB4FRHrDkP/g=
 			</data>
 		</dict>
 		<key>Modules/NativeAppReact.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
@@ -207,7 +207,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			+yQC/Ti4HOWqECeutuB8BExmi1w/9ZArps1e7dqXaLk=
+			Kz7tKfzhph43BfLoOVPBH8i5dweINKDjyqqAnP1lSlI=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
@@ -305,7 +305,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			eRMqW5+wE91N9t4fE/JlaZEiTZRyjcyl3xG1qSPIgOY=
+			ehaU/SBQnIFBLn216vE2/6ld0UKqUcgVY/Kk26wEweM=
 			</data>
 		</dict>
 	</dict>
