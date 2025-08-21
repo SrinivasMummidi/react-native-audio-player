@@ -56,5 +56,10 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "codegenConfig": {
+    "name": "AudioPlayerSpec",
+    "type": "modules",
+    "jsSrcsDir": "src/modules/AudioPlayer"
   }
 }

@@ -14,11 +14,11 @@
 		</data>
 		<key>Modules/NativeAppReact.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo</key>
 		<data>
-		raRuRhL0bXCjqEPUQVXt7iphQQw=
+		ABPSagrCjD4LgMmNpgqyZRXL54k=
 		</data>
 		<key>Modules/NativeAppReact.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
 		<data>
-		FTxqB73iwS2SbhSo/6AQ2IkebKA=
+		9ociluehKRJCdVP+CgXOboUj36I=
 		</data>
 		<key>Modules/NativeAppReact.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
@@ -38,7 +38,7 @@
 		</data>
 		<key>Modules/NativeAppReact.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		HQgtN/sauVr7SjIuKxel/CdGKf0=
+		DRLJPP9FDbQVp/uMrg5TWuJlFCU=
 		</data>
 		<key>Modules/NativeAppReact.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
@@ -58,7 +58,7 @@
 		</data>
 		<key>Modules/NativeAppReact.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		WWg/KCCCLehyKQ9eKICUoLHicoo=
+		P58tkE2DxjBWRRKgLuL3Wh0zDMk=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -114,7 +114,7 @@
 		</data>
 		<key>main.jsbundle</key>
 		<data>
-		jJvem4tFFNaM97rWMO4hBl8fkso=
+		RwzqFqRL+6+A7rOIh3N8ys9xQCE=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -130,14 +130,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			zehowqiLe7HZE3IAKcSdQXq8ouDOp+gAkW2wy2Y37aA=
+			qEphFeoz5D1f84nxejBo0gI2GgYw/RU4dyfHdloytyQ=
 			</data>
 		</dict>
 		<key>Modules/NativeAppReact.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			xazbhhLtl5O6DYepT4cioPm4pRUk+kNxIIJJtJ9eQ7A=
+			cwCxQZbLSBqpcjqiJTDDXi8Fp4PVBhmB0TGxanpPjyw=
 			</data>
 		</dict>
 		<key>Modules/NativeAppReact.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
@@ -172,7 +172,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			/l/pTDbjROcXOpHbPW8ezOA7TorjdpaOfjdhTebRNbQ=
+			tw1RCSjGb3yhU5uetuaWC5pmTC649JT5uvB0KGp8G3k=
 			</data>
 		</dict>
 		<key>Modules/NativeAppReact.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
@@ -207,7 +207,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			9EHCyKx5aVBhUdnsd49n622obFsNrCM+GDZ3Eo+tjYM=
+			+yQC/Ti4HOWqECeutuB8BExmi1w/9ZArps1e7dqXaLk=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
@@ -305,7 +305,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			WYOyOIdqpztITxXsweXbScMLeMk6VWl6yLE7T3giLuM=
+			eRMqW5+wE91N9t4fE/JlaZEiTZRyjcyl3xG1qSPIgOY=
 			</data>
 		</dict>
 	</dict>
