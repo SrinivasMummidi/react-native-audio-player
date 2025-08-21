@@ -40,19 +40,20 @@ RCT_EXPORT_MODULE(NativeCommunication)
           [sharedRegistry performSelector:@selector(processEvents:)
                                withObject:event];
 
-      dispatch_after(
-          dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3 * NSEC_PER_SEC)),
-          dispatch_get_main_queue(), ^{
-            NSLog(@"✅ [NativeCommunicationTurboModule] Received response from "
-                  @"registered service");
-            resolve(response);
-          });
+      NSLog(@"✅ [NativeCommunicationTurboModule] Received response from "
+            @"registered service");
+      resolve(response);
       return;
     } else {
       NSLog(@"⚠️ [NativeCommunicationTurboModule] NativeCommunication not "
             @"available or doesn't respond to processEvents:");
+      reject(@"NO_PROCESS_EVENTS", @"Service does not implement processEvents",
+             nil);
+      return;
     }
   }
+  reject(@"NO_REGISTRY", @"Could not find NativeCommunicationServiceRegistry",
+         nil);
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:

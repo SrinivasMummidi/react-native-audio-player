@@ -27,9 +27,9 @@ const TranscriptViewContent: React.FC<TranscriptViewProps> = ({
   const { isPlaying } = useAudioPlayer();
   const { searchState } = useSearch();
   const { autoSync } = useAutoScroll();
-  useEffect(()=>{
+  useEffect(() => {
     setIsLoading(false);
-  },[])
+  }, []);
   // Find active segment based on current audio position
   const activeSegmentIndex = useMemo(() => {
     if (!segments.length || !currentTime) return -1;
@@ -81,17 +81,11 @@ const TranscriptViewContent: React.FC<TranscriptViewProps> = ({
       </View>
     );
   }
-  return (
-    
-    isLoading ? 
-     <View
-              style={[
-                styles.contentContainer,
-                styles.loadingSection,
-              ]}
-            >
-              <LoadingSpinner size={24} />
-            </View> :
+  return isLoading ? (
+    <View style={[styles.contentContainer, styles.loadingSection]}>
+      <LoadingSpinner size={24} />
+    </View>
+  ) : (
     <View style={styles.container}>
       <SearchInput />
       <ScrollView
@@ -132,7 +126,6 @@ const TranscriptViewContent: React.FC<TranscriptViewProps> = ({
 
 // Main component that provides search context
 const TranscriptView: React.FC<TranscriptViewProps> = props => {
-
   return (
     <SearchProvider transcriptSegments={props.segments}>
       <TranscriptViewContent {...props} />
@@ -162,7 +155,7 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
   },
-    loadingSection: {
+  loadingSection: {
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',

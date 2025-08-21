@@ -49,10 +49,17 @@ function Insights() {
         } else if (typeof error === 'object' && error !== null) {
           // Handle fetch errors or other network errors
           const errorObj = error as any;
-          if (errorObj.name === 'TypeError' && errorObj.message.includes('fetch')) {
-            errorMessage = 'Network error: Unable to connect to insights service';
+          if (
+            errorObj.name === 'TypeError' &&
+            errorObj.message.includes('fetch')
+          ) {
+            errorMessage =
+              'Network error: Unable to connect to insights service';
           } else {
-            errorMessage = errorObj.message || errorObj.toString() || 'Unknown error occurred';
+            errorMessage =
+              errorObj.message ||
+              errorObj.toString() ||
+              'Unknown error occurred';
           }
         }
 

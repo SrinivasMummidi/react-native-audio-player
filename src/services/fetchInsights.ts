@@ -81,7 +81,9 @@ async function fetchInsights({
     if (!result.ok) {
       const errorBody = await result.text().catch(() => 'Unknown error');
       throw new Error(
-        `Error fetching insights: ${result.status} ${result.statusText}${errorBody ? ` - ${errorBody}` : ''}`,
+        `Error fetching insights: ${result.status} ${result.statusText}${
+          errorBody ? ` - ${errorBody}` : ''
+        }`,
       );
     }
 
@@ -96,10 +98,12 @@ async function fetchInsights({
     return data;
   } catch (error) {
     console.error('Error fetching insights:', error);
-    
+
     // Enhanced error handling with more details
     if (error instanceof TypeError && error.message.includes('fetch')) {
-      throw new Error('Network error: Unable to connect to insights service. Please check your internet connection.');
+      throw new Error(
+        'Network error: Unable to connect to insights service. Please check your internet connection.',
+      );
     } else if (error instanceof Error) {
       throw error; // Re-throw the original error with its details
     } else {
