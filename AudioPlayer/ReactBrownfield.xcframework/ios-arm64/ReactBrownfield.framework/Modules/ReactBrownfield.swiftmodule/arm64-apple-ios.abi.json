@@ -17,7 +17,9 @@
         "printedName": "React",
         "declKind": "Import",
         "moduleName": "ReactBrownfield",
-        "declAttributes": ["AccessControl"]
+        "declAttributes": [
+          "AccessControl"
+        ]
       },
       {
         "kind": "Import",
@@ -25,7 +27,9 @@
         "printedName": "React_RCTAppDelegate",
         "declKind": "Import",
         "moduleName": "ReactBrownfield",
-        "declAttributes": ["AccessControl"]
+        "declAttributes": [
+          "AccessControl"
+        ]
       },
       {
         "kind": "Import",
@@ -33,7 +37,9 @@
         "printedName": "ReactAppDependencyProvider",
         "declKind": "Import",
         "moduleName": "ReactBrownfield",
-        "declAttributes": ["AccessControl"]
+        "declAttributes": [
+          "AccessControl"
+        ]
       },
       {
         "kind": "TypeDecl",
@@ -84,7 +90,9 @@
                 "moduleName": "ReactBrownfield",
                 "static": true,
                 "implicit": true,
-                "declAttributes": ["Final"],
+                "declAttributes": [
+                  "Final"
+                ],
                 "accessorKind": "get"
               }
             ]
@@ -131,7 +139,9 @@
                 "mangledName": "$s15ReactBrownfield0a6NativeB0C9entryFileSSvg",
                 "moduleName": "ReactBrownfield",
                 "implicit": true,
-                "declAttributes": ["ObjC"],
+                "declAttributes": [
+                  "ObjC"
+                ],
                 "accessorKind": "get"
               },
               {
@@ -156,7 +166,9 @@
                 "mangledName": "$s15ReactBrownfield0a6NativeB0C9entryFileSSvs",
                 "moduleName": "ReactBrownfield",
                 "implicit": true,
-                "declAttributes": ["ObjC"],
+                "declAttributes": [
+                  "ObjC"
+                ],
                 "accessorKind": "set"
               },
               {
@@ -237,7 +249,9 @@
                 "mangledName": "$s15ReactBrownfield0a6NativeB0C16fallbackResourceSSSgvg",
                 "moduleName": "ReactBrownfield",
                 "implicit": true,
-                "declAttributes": ["ObjC"],
+                "declAttributes": [
+                  "ObjC"
+                ],
                 "accessorKind": "get"
               },
               {
@@ -270,7 +284,9 @@
                 "mangledName": "$s15ReactBrownfield0a6NativeB0C16fallbackResourceSSSgvs",
                 "moduleName": "ReactBrownfield",
                 "implicit": true,
-                "declAttributes": ["ObjC"],
+                "declAttributes": [
+                  "ObjC"
+                ],
                 "accessorKind": "set"
               },
               {
@@ -335,7 +351,9 @@
                 "mangledName": "$s15ReactBrownfield0a6NativeB0C10bundlePathSSvg",
                 "moduleName": "ReactBrownfield",
                 "implicit": true,
-                "declAttributes": ["ObjC"],
+                "declAttributes": [
+                  "ObjC"
+                ],
                 "accessorKind": "get"
               },
               {
@@ -360,7 +378,9 @@
                 "mangledName": "$s15ReactBrownfield0a6NativeB0C10bundlePathSSvs",
                 "moduleName": "ReactBrownfield",
                 "implicit": true,
-                "declAttributes": ["ObjC"],
+                "declAttributes": [
+                  "ObjC"
+                ],
                 "accessorKind": "set"
               },
               {
@@ -425,7 +445,9 @@
                 "mangledName": "$s15ReactBrownfield0a6NativeB0C6bundleSo8NSBundleCvg",
                 "moduleName": "ReactBrownfield",
                 "implicit": true,
-                "declAttributes": ["ObjC"],
+                "declAttributes": [
+                  "ObjC"
+                ],
                 "accessorKind": "get"
               },
               {
@@ -450,7 +472,9 @@
                 "mangledName": "$s15ReactBrownfield0a6NativeB0C6bundleSo8NSBundleCvs",
                 "moduleName": "ReactBrownfield",
                 "implicit": true,
-                "declAttributes": ["ObjC"],
+                "declAttributes": [
+                  "ObjC"
+                ],
                 "accessorKind": "set"
               },
               {
@@ -488,7 +512,11 @@
             "usr": "c:@M@ReactBrownfield@objc(cs)ReactNativeBrownfield(im)startReactNative",
             "mangledName": "$s15ReactBrownfield0a6NativeB0C05startaC0yyF",
             "moduleName": "ReactBrownfield",
-            "declAttributes": ["AccessControl", "ObjC", "RawDocComment"],
+            "declAttributes": [
+              "AccessControl",
+              "ObjC",
+              "RawDocComment"
+            ],
             "funcSelfKind": "NonMutating"
           },
           {
@@ -577,7 +605,10 @@
             "mangledName": "$s15ReactBrownfield0a6NativeB0C4view10moduleName12initialProps13launchOptionsSo6UIViewCSgSS_SDys11AnyHashableVypGSgANtF",
             "moduleName": "ReactBrownfield",
             "objc_name": "viewWithModuleName:initialProps:launchOptions:",
-            "declAttributes": ["AccessControl", "ObjC"],
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
             "funcSelfKind": "NonMutating"
           },
           {
@@ -621,7 +652,11 @@
             "mangledName": "$s15ReactBrownfield0a6NativeB0C05startaC014onBundleLoadedyyycSg_tF",
             "moduleName": "ReactBrownfield",
             "objc_name": "startReactNativeOnBundleLoaded:",
-            "declAttributes": ["AccessControl", "ObjC", "RawDocComment"],
+            "declAttributes": [
+              "AccessControl",
+              "ObjC",
+              "RawDocComment"
+            ],
             "funcSelfKind": "NonMutating"
           },
           {
@@ -692,7 +727,11 @@
             "mangledName": "$s15ReactBrownfield0a6NativeB0C05startaC014onBundleLoaded13launchOptionsyyycSg_SDys11AnyHashableVypGSgtF",
             "moduleName": "ReactBrownfield",
             "objc_name": "startReactNativeOnBundleLoaded:launchOptions:",
-            "declAttributes": ["AccessControl", "ObjC", "RawDocComment"],
+            "declAttributes": [
+              "AccessControl",
+              "ObjC",
+              "RawDocComment"
+            ],
             "funcSelfKind": "NonMutating"
           },
           {
@@ -714,7 +753,11 @@
             "overriding": true,
             "implicit": true,
             "objc_name": "init",
-            "declAttributes": ["Dynamic", "ObjC", "Override"],
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Override"
+            ],
             "init_kind": "Designated"
           }
         ],
@@ -722,10 +765,15 @@
         "usr": "c:@M@ReactBrownfield@objc(cs)ReactNativeBrownfield",
         "mangledName": "$s15ReactBrownfield0a6NativeB0C",
         "moduleName": "ReactBrownfield",
-        "declAttributes": ["AccessControl", "ObjC"],
+        "declAttributes": [
+          "AccessControl",
+          "ObjC"
+        ],
         "superclassUsr": "c:objc(cs)NSObject",
         "inheritsConvenienceInitializers": true,
-        "superclassNames": ["ObjectiveC.NSObject"],
+        "superclassNames": [
+          "ObjectiveC.NSObject"
+        ],
         "conformances": [
           {
             "kind": "Conformance",
@@ -798,7 +846,9 @@
         "printedName": "React",
         "declKind": "Import",
         "moduleName": "ReactBrownfield",
-        "declAttributes": ["AccessControl"]
+        "declAttributes": [
+          "AccessControl"
+        ]
       },
       {
         "kind": "TypeDecl",
@@ -827,7 +877,11 @@
             "mangledName": "$s15ReactBrownfield0a6NativeB10ModuleImplC30setPopGestureRecognizerEnabledyySbFZ",
             "moduleName": "ReactBrownfield",
             "static": true,
-            "declAttributes": ["Final", "AccessControl", "ObjC"],
+            "declAttributes": [
+              "Final",
+              "AccessControl",
+              "ObjC"
+            ],
             "funcSelfKind": "NonMutating"
           },
           {
@@ -852,7 +906,11 @@
             "mangledName": "$s15ReactBrownfield0a6NativeB10ModuleImplC05popToC08animatedySb_tFZ",
             "moduleName": "ReactBrownfield",
             "static": true,
-            "declAttributes": ["Final", "AccessControl", "ObjC"],
+            "declAttributes": [
+              "Final",
+              "AccessControl",
+              "ObjC"
+            ],
             "funcSelfKind": "NonMutating"
           },
           {
@@ -874,7 +932,11 @@
             "overriding": true,
             "implicit": true,
             "objc_name": "init",
-            "declAttributes": ["Dynamic", "ObjC", "Override"],
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Override"
+            ],
             "init_kind": "Designated"
           }
         ],
@@ -882,10 +944,16 @@
         "usr": "c:@M@ReactBrownfield@objc(cs)ReactNativeBrownfieldModuleImpl",
         "mangledName": "$s15ReactBrownfield0a6NativeB10ModuleImplC",
         "moduleName": "ReactBrownfield",
-        "declAttributes": ["AccessControl", "ObjCMembers", "ObjC"],
+        "declAttributes": [
+          "AccessControl",
+          "ObjCMembers",
+          "ObjC"
+        ],
         "superclassUsr": "c:objc(cs)NSObject",
         "inheritsConvenienceInitializers": true,
-        "superclassNames": ["ObjectiveC.NSObject"],
+        "superclassNames": [
+          "ObjectiveC.NSObject"
+        ],
         "conformances": [
           {
             "kind": "Conformance",
@@ -1006,7 +1074,11 @@
             "usr": "s:15ReactBrownfield0A10NativeViewV10moduleName17initialPropertiesACSS_SDySSypGtcfc",
             "mangledName": "$s15ReactBrownfield0A10NativeViewV10moduleName17initialPropertiesACSS_SDySSypGtcfc",
             "moduleName": "ReactBrownfield",
-            "declAttributes": ["Preconcurrency", "Custom", "AccessControl"],
+            "declAttributes": [
+              "Preconcurrency",
+              "Custom",
+              "AccessControl"
+            ],
             "init_kind": "Designated"
           },
           {
@@ -1032,7 +1104,11 @@
             "usr": "s:15ReactBrownfield0A10NativeViewV4bodyQrvp",
             "mangledName": "$s15ReactBrownfield0A10NativeViewV4bodyQrvp",
             "moduleName": "ReactBrownfield",
-            "declAttributes": ["Preconcurrency", "Custom", "AccessControl"],
+            "declAttributes": [
+              "Preconcurrency",
+              "Custom",
+              "AccessControl"
+            ],
             "accessors": [
               {
                 "kind": "Accessor",
@@ -1140,7 +1216,9 @@
         "printedName": "React",
         "declKind": "Import",
         "moduleName": "ReactBrownfield",
-        "declAttributes": ["AccessControl"]
+        "declAttributes": [
+          "AccessControl"
+        ]
       },
       {
         "kind": "TypeDecl",
@@ -1294,7 +1372,12 @@
         "usr": "c:@M@ReactBrownfield@objc(cs)ReactNativeViewController",
         "mangledName": "$s15ReactBrownfield0A20NativeViewControllerC",
         "moduleName": "ReactBrownfield",
-        "declAttributes": ["Preconcurrency", "Custom", "AccessControl", "ObjC"],
+        "declAttributes": [
+          "Preconcurrency",
+          "Custom",
+          "AccessControl",
+          "ObjC"
+        ],
         "superclassUsr": "c:objc(cs)UIViewController",
         "hasMissingDesignatedInitializers": true,
         "superclassNames": [
@@ -1603,63 +1686,63 @@
   },
   "ConstValues": [
     {
-      "filePath": "/Users/ram/Workspace/Full/lily/react-native-audio-player/node_modules/@callstack/react-native-brownfield/ios/ReactNativeBrownfield.swift",
+      "filePath": "\/Users\/tushar\/Documents\/react-native-audio-player\/node_modules\/@callstack\/react-native-brownfield\/ios\/ReactNativeBrownfield.swift",
       "kind": "StringLiteral",
       "offset": 210,
       "length": 7,
       "value": "\"index\""
     },
     {
-      "filePath": "/Users/ram/Workspace/Full/lily/react-native-audio-player/node_modules/@callstack/react-native-brownfield/ios/ReactNativeBrownfield.swift",
+      "filePath": "\/Users\/tushar\/Documents\/react-native-audio-player\/node_modules\/@callstack\/react-native-brownfield\/ios\/ReactNativeBrownfield.swift",
       "kind": "StringLiteral",
       "offset": 237,
       "length": 15,
       "value": "\"main.jsbundle\""
     },
     {
-      "filePath": "/Users/ram/Workspace/Full/lily/react-native-audio-player/node_modules/@callstack/react-native-brownfield/ios/ReactNativeBrownfield.swift",
+      "filePath": "\/Users\/tushar\/Documents\/react-native-audio-player\/node_modules\/@callstack\/react-native-brownfield\/ios\/ReactNativeBrownfield.swift",
       "kind": "StringLiteral",
       "offset": 1243,
       "length": 7,
       "value": "\"index\""
     },
     {
-      "filePath": "/Users/ram/Workspace/Full/lily/react-native-audio-player/node_modules/@callstack/react-native-brownfield/ios/ReactNativeBrownfield.swift",
+      "filePath": "\/Users\/tushar\/Documents\/react-native-audio-player\/node_modules\/@callstack\/react-native-brownfield\/ios\/ReactNativeBrownfield.swift",
       "kind": "StringLiteral",
       "offset": 1564,
       "length": 15,
       "value": "\"main.jsbundle\""
     },
     {
-      "filePath": "/Users/ram/Workspace/Full/lily/react-native-audio-player/node_modules/@callstack/react-native-brownfield/ios/ReactNativeBrownfield.swift",
+      "filePath": "\/Users\/tushar\/Documents\/react-native-audio-player\/node_modules\/@callstack\/react-native-brownfield\/ios\/ReactNativeBrownfield.swift",
       "kind": "StringLiteral",
       "offset": 4441,
       "length": 25,
       "value": "\"PopToNativeNotification\""
     },
     {
-      "filePath": "/Users/ram/Workspace/Full/lily/react-native-audio-player/node_modules/@callstack/react-native-brownfield/ios/ReactNativeBrownfield.swift",
+      "filePath": "\/Users\/tushar\/Documents\/react-native-audio-player\/node_modules\/@callstack\/react-native-brownfield\/ios\/ReactNativeBrownfield.swift",
       "kind": "StringLiteral",
       "offset": 4616,
       "length": 40,
       "value": "\"TogglePopGestureRecognizerNotification\""
     },
     {
-      "filePath": "/Users/ram/Workspace/Full/lily/react-native-audio-player/node_modules/@callstack/react-native-brownfield/ios/ReactNativeView.swift",
+      "filePath": "\/Users\/tushar\/Documents\/react-native-audio-player\/node_modules\/@callstack\/react-native-brownfield\/ios\/ReactNativeView.swift",
       "kind": "Dictionary",
       "offset": 243,
       "length": 3,
       "value": "[]"
     },
     {
-      "filePath": "/Users/ram/Workspace/Full/lily/react-native-audio-player/node_modules/@callstack/react-native-brownfield/ios/ReactNativeView.swift",
+      "filePath": "\/Users\/tushar\/Documents\/react-native-audio-player\/node_modules\/@callstack\/react-native-brownfield\/ios\/ReactNativeView.swift",
       "kind": "Dictionary",
       "offset": 823,
       "length": 3,
       "value": "[]"
     },
     {
-      "filePath": "/Users/ram/Workspace/Full/lily/react-native-audio-player/node_modules/@callstack/react-native-brownfield/ios/ReactNativeView.swift",
+      "filePath": "\/Users\/tushar\/Documents\/react-native-audio-player\/node_modules\/@callstack\/react-native-brownfield\/ios\/ReactNativeView.swift",
       "kind": "Dictionary",
       "offset": 898,
       "length": 3,

@@ -10,7 +10,9 @@
         "printedName": "ReactBrownfield",
         "declKind": "Import",
         "moduleName": "NativeAppReact",
-        "declAttributes": ["Exported"]
+        "declAttributes": [
+          "Exported"
+        ]
       },
       {
         "kind": "Var",
@@ -28,7 +30,11 @@
         "usr": "s:14NativeAppReact0cA6BundleSo8NSBundleCvp",
         "mangledName": "$s14NativeAppReact0cA6BundleSo8NSBundleCvp",
         "moduleName": "NativeAppReact",
-        "declAttributes": ["HasInitialValue", "HasStorage", "AccessControl"],
+        "declAttributes": [
+          "HasInitialValue",
+          "HasStorage",
+          "AccessControl"
+        ],
         "isLet": true,
         "hasStorage": true,
         "accessors": [

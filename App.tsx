@@ -21,6 +21,7 @@ import { AutoScrollProvider } from './src/context/AutoScrollContext';
 import { AppEnv } from './src/types/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NativeCommunication from './src/specs/NativeCommunication';
+import type { EventSubscription } from 'react-native';
 
 type AppProps = {
   // Core config (match audio-transcript-player)
@@ -48,9 +49,24 @@ export default function App({
     async () => accessToken,
     [accessToken],
   );
-  NativeCommunication?.processEvents('get-access-token').then(data => {
-    console.log('Access token received:', data);
-  });
+  React.useEffect(() => {
+    let sub: EventSubscription | null = null;
+    if (NativeCommunication && 'onCommunicationEvent' in NativeCommunication) {
+      // Subscribe to native events and log event type
+      // @ts-ignore - type provided by Codegen after regeneration
+      sub = NativeCommunication.onCommunicationEvent?.((payload: { type: string; data?: string }) => {
+        console.log('[NativeCommunication] event type:', payload?.type);
+      }) ?? null;
+    }
+    // Trigger a native event after subscription is set
+    NativeCommunication?.processEvents('get-access-token').then(data => {
+      console.log('Access token received:', data);
+    });
+    return () => {
+      sub?.remove?.();
+      sub = null;
+    };
+  }, []);
   const [audioUrl, setAudioUrl] = React.useState<string | undefined>(undefined);
   const [, setError] = React.useState<string | null>(null);
   const [showSummaryPanel, setShowSummaryPanel] = React.useState(false);

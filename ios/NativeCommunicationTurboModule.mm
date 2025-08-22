@@ -11,12 +11,52 @@
 
 #import <NativeCommunicationSpec/NativeCommunicationSpec.h>
 
-@interface NativeCommunicationTurboModule : NSObject <NativeCommunicationSpec>
+@interface NativeCommunicationTurboModule : NativeCommunicationSpecBase <NativeCommunicationSpec>
 @end
 
 @implementation NativeCommunicationTurboModule
 
 RCT_EXPORT_MODULE(NativeCommunication)
+
+- (instancetype)init {
+  self = [super init];
+  if (self) {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleNativeCommunicationEvent:)
+                                                 name:@"NativeCommunicationEvent"
+                                               object:nil];
+    NSLog(@"📡 [NativeCommunicationTurboModule] Observer registered for NativeCommunicationEvent");
+  }
+  return self;
+}
+
+- (void)dealloc {
+  [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                  name:@"NativeCommunicationEvent"
+                                                object:nil];
+  NSLog(@"🧹 [NativeCommunicationTurboModule] Observer removed for NativeCommunicationEvent");
+}
+
+- (void)handleNativeCommunicationEvent:(NSNotification *)notification {
+  NSDictionary *userInfo = notification.userInfo;
+  if (![userInfo isKindOfClass:[NSDictionary class]]) {
+    return;
+  }
+  id typeVal = userInfo[@"type"];
+  id dataVal = userInfo[@"data"];
+  if (![typeVal isKindOfClass:[NSString class]]) {
+    NSLog(@"⚠️ [NativeCommunicationTurboModule] Invalid event payload: missing type");
+    return;
+  }
+  NSMutableDictionary *payload = [NSMutableDictionary new];
+  payload[@"type"] = (NSString *)typeVal;
+  if ([dataVal isKindOfClass:[NSString class]]) {
+    payload[@"data"] = (NSString *)dataVal;
+  }
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [self emitOnCommunicationEvent:payload];
+  });
+}
 
 - (void)processEvents:(NSString *)event
               resolve:(RCTPromiseResolveBlock)resolve
@@ -42,6 +82,11 @@ RCT_EXPORT_MODULE(NativeCommunication)
 
       NSLog(@"✅ [NativeCommunicationTurboModule] Received response from "
             @"registered service");
+      if (response == nil) {
+        NSLog(@"⚠️ [NativeCommunicationTurboModule] Service returned nil response");
+        reject(@"NO_RESPONSE", @"Service returned nil response", nil);
+        return;
+      }
       resolve(response);
       return;
     } else {
