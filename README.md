@@ -1,6 +1,6 @@
 # React Native Audio Player
 
-A clean, single audio player for React Native built on `react-native-audio-recorder-player` and `react-native-awesome-slider`.
+A clean, single audio player for React Native built on `react-native-track-player@5` and `react-native-awesome-slider`.
 
 This repository was simplified to one canonical implementation named AudioPlayer. Legacy variants (SimpleAudioPlayer, ContextAudioPlayer, EnhancedAudioPlayer) and recording code were removed.
 
@@ -15,6 +15,7 @@ See MIGRATION.md for upgrade notes from older versions within this repo.
 - ✅ Playback speed control (0.5x–2.0x)
 - ✅ Real-time progress with remaining time option
 - ✅ Volume/mute support at the provider level
+- ✅ Background playback & notification / lock screen controls (Track Player service)
 
 ### Architecture
 
@@ -26,7 +27,7 @@ See MIGRATION.md for upgrade notes from older versions within this repo.
 ### 1. Install Dependencies
 
 ```bash
-npm install react-native-audio-recorder-player react-native-nitro-modules react-native-awesome-slider react-native-reanimated react-native-gesture-handler
+npm install react-native-track-player@5.0.0-alpha0 react-native-nitro-modules react-native-awesome-slider react-native-reanimated react-native-gesture-handler
 ```
 
 ### 2. iOS Setup
@@ -35,7 +36,7 @@ npm install react-native-audio-recorder-player react-native-nitro-modules react-
 cd ios && pod install
 ```
 
-Add microphone permission to `ios/YourApp/Info.plist`:
+Add required usage descriptions to `ios/YourApp/Info.plist`:
 
 ```xml
 <key>NSMicrophoneUsageDescription</key>
@@ -45,6 +46,16 @@ Add microphone permission to `ios/YourApp/Info.plist`:
 ### 3. Android Setup
 
 Add permissions to `android/app/src/main/AndroidManifest.xml`:
+For background controls ensure a foreground service declaration (if not already present) inside the `<application>` tag (React Native Track Player typically adds via autolinking, but if needed):
+
+```xml
+<service android:name="com.doublesymmetry.trackplayer.service.MusicService"
+         android:enabled="true"
+         android:exported="false" />
+```
+
+If targeting Android 13+, request POST_NOTIFICATIONS permission at runtime if you suppress default behavior.
+
 
 ```xml
 <uses-permission android:name="android.permission.INTERNET" />
@@ -58,6 +69,8 @@ Add permissions to `android/app/src/main/AndroidManifest.xml`:
 There are two common ways to use the player: a simple drop-in component, or composing your own UI with the context.
 
 ### 1) Drop-in player
+Background: The playback service is registered in `index.js` via `TrackPlayer.registerPlaybackService(() => require('./trackPlayerService').default);` which enables notification & lock screen controls.
+
 
 ```tsx
 import { AudioPlayer } from './src/components/AudioPlayer';
@@ -159,7 +172,7 @@ This React Native implementation mirrors the Phonesystem web audio player for pl
 
 | Feature         | Web Version      | React Native Version                  |
 | --------------- | ---------------- | ------------------------------------- |
-| Audio Playback  | ✅ HTML5 Audio   | ✅ react-native-audio-recorder-player |
+| Audio Playback  | ✅ HTML5 Audio   | ✅ react-native-track-player |
 | Progress Slider | ✅ Custom slider | ✅ react-native-awesome-slider        |
 | Volume Control  | ✅ Web API       | ✅ Native volume control              |
 | Speed Control   | ✅ Web API       | ✅ Native speed control               |
@@ -172,6 +185,8 @@ This React Native implementation mirrors the Phonesystem web audio player for pl
 1. Audio not playing on iOS Simulator: Prefer a real device; simulators can be limited for audio.
 2. Permission denied on Android: Ensure required permissions are added to AndroidManifest.xml.
 3. Reanimated issues: Use compatible versions of react-native-reanimated and react-native-gesture-handler.
+4. No notification showing: ensure app not in restricted battery mode and service registered before first playback call.
+5. Controls unresponsive: confirm `capabilities` passed to `updateOptions` include the action you expect.
 
 ### Performance Tips
 
@@ -203,7 +218,7 @@ MIT
 
 ## Dependencies
 
-- [react-native-audio-recorder-player](https://github.com/hyochan/react-native-audio-recorder-player) – Audio playback
+- [react-native-track-player](https://github.com/doublesymmetry/react-native-track-player) – Audio playback
 - [react-native-awesome-slider](https://github.com/alantoa/react-native-awesome-slider) – Interactive slider
 - [react-native-reanimated](https://docs.swmansion.com/react-native-reanimated/) – Animations
 - [react-native-gesture-handler](https://docs.swmansion.com/react-native-gesture-handler/) – Touch handling

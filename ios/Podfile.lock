@@ -1678,6 +1678,36 @@ PODS:
     - React-RCTFBReactNativeSpec
     - ReactCommon/turbomodule/core
     - SocketRocket
+  - react-native-track-player (5.0.0-alpha0):
+    - boost
+    - DoubleConversion
+    - fast_float
+    - fmt
+    - glog
+    - hermes-engine
+    - RCT-Folly
+    - RCT-Folly/Fabric
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-hermes
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - SocketRocket
+    - SwiftAudioEx (= 1.1.0)
+    - Yoga
   - React-NativeModulesApple (0.80.1):
     - boost
     - DoubleConversion
@@ -2183,8 +2213,6 @@ PODS:
     - React-perflogger (= 0.80.1)
     - React-utils (= 0.80.1)
     - SocketRocket
-  - RNAudioRecorderPlayer (3.6.14):
-    - React-Core
   - RNCAsyncStorage (2.2.0):
     - boost
     - DoubleConversion
@@ -2482,6 +2510,7 @@ PODS:
     - SocketRocket
     - Yoga
   - SocketRocket (0.7.1)
+  - SwiftAudioEx (1.1.0)
   - Yoga (0.0.0)
 
 DEPENDENCIES:
@@ -2527,6 +2556,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
+  - react-native-track-player (from `../node_modules/react-native-track-player`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
   - React-oscompat (from `../node_modules/react-native/ReactCommon/oscompat`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -2559,7 +2589,6 @@ DEPENDENCIES:
   - "ReactBrownfield (from `../node_modules/@callstack/react-native-brownfield`)"
   - ReactCodegen (from `build/generated/ios`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
-  - RNAudioRecorderPlayer (from `../node_modules/react-native-audio-recorder-player`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
@@ -2571,6 +2600,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - SocketRocket
+    - SwiftAudioEx
 
 EXTERNAL SOURCES:
   boost:
@@ -2656,6 +2686,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   React-microtasksnativemodule:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
+  react-native-track-player:
+    :path: "../node_modules/react-native-track-player"
   React-NativeModulesApple:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios"
   React-oscompat:
@@ -2720,8 +2752,6 @@ EXTERNAL SOURCES:
     :path: build/generated/ios
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
-  RNAudioRecorderPlayer:
-    :path: "../node_modules/react-native-audio-recorder-player"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCClipboard:
@@ -2777,6 +2807,7 @@ SPEC CHECKSUMS:
   React-logger: 984ebd897afad067555d081deaf03f57c4315723
   React-Mapbuffer: 1c4f922460dc5f7006f1d5e89bf2d42aa77b0904
   React-microtasksnativemodule: dd33f28d1022f35430c973ee46add9b91f719026
+  react-native-track-player: 471334e59f49ebe49fd42e6a1835c71a76f07ae2
   React-NativeModulesApple: 2a261739a86fb0fc82de4b9cc8c9199083b4cea2
   React-oscompat: 114036cd8f064558c9c1a0c04fc9ae5e1453706a
   React-perflogger: e7287fee27c16e3c8bd4d470f2361572b63be16b
@@ -2809,13 +2840,13 @@ SPEC CHECKSUMS:
   ReactBrownfield: 7baa66a9d7d8f01e5561a21647b6cfb67f95bf31
   ReactCodegen: 08105625e801766da74078b4b122c16d539d6872
   ReactCommon: 4c7015a078757bb1f3032df5f75dd61b2121f297
-  RNAudioRecorderPlayer: b5ed41ccfe72a211a870bfe09ab36c046eb27d2a
   RNCAsyncStorage: f30b3a83064e28b0fc46f1fbd3834589ed64c7b9
   RNCClipboard: 8e5237c79dafacea5b7adf4c3ab39a4236b5ef7e
   RNGestureHandler: a52292df4f8fc7daab354ad2c37be401d4c3bed8
   RNReanimated: e2aba9f6bcd039749ae12e7a88852678623e1fa0
   RNSVG: 05951f386c4b23c484335dab2346f53e6210e8dc
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
+  SwiftAudioEx: f6aa653770f3a0d3851edaf8d834a30aee4a7646
   Yoga: 2b7a0cd38b4b0b4fdd7f353017fde11914148f98
 
 PODFILE CHECKSUM: 480676697e8e7abf0b21f06fe8dcbeaa94c86711

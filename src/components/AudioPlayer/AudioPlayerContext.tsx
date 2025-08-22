@@ -7,15 +7,21 @@ import React, {
   useEffect,
   ReactNode,
 } from 'react';
-import AudioRecorderPlayer, {
-  PlayBackType,
-} from 'react-native-audio-recorder-player';
+import TrackPlayer, {
+  Track as TPTrack,
+  Capability,
+  usePlaybackState,
+  useProgress,
+  State as TPState,
+} from 'react-native-track-player';
 import { playbackRates } from './utils';
 import { useAutoScroll } from '../../context/AutoScrollContext';
 
+// TODO: Replace MutableRefObject usage if upstream deprecates; safe internally.
 export interface AudioPlayerContextType {
   // Player instance
-  player: AudioRecorderPlayer;
+  // TrackPlayer is module-level singleton, keep for API symmetry
+  player: typeof TrackPlayer;
 
   // Playback state
   isPlaying: boolean;
@@ -27,7 +33,7 @@ export interface AudioPlayerContextType {
   totalDuration: number; // in milliseconds
 
   // Refs for immediate access (useful for transcript highlighting)
-  currentTimeRef: React.MutableRefObject<number>;
+  currentTimeRef: { current: number };
 
   // Audio settings
   volume: number; // 0-100
@@ -89,18 +95,17 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
   onError,
 }) => {
   // Create stable player instance
-  const playerRef = useRef(new AudioRecorderPlayer());
-  const player = playerRef.current;
+  const player = TrackPlayer;
   // State
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isBuffering, setIsBuffering] = useState(false);
-  const [currentPosition, setCurrentPosition] = useState(0);
-  const [totalDuration, setTotalDuration] = useState(0);
-  const [isReady, setIsReady] = useState(false);
-  const [volume, setVolumeState] = useState(100);
-  const [isMuted, setIsMuted] = useState(false);
-  const [playbackSpeed, setPlaybackSpeed] = useState(playbackRates[1]); // 1.0x
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isBuffering, setIsBuffering] = useState<boolean>(false);
+  const [currentPosition, setCurrentPosition] = useState<number>(0); // ms
+  const [totalDuration, setTotalDuration] = useState<number>(0); // ms
+  const [isReady, setIsReady] = useState<boolean>(false);
+  const [volume, setVolumeState] = useState<number>(100);
+  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [playbackSpeed, setPlaybackSpeed] = useState<{ id: string; value: number; label: string }>(playbackRates[1]); // 1.0x
   const [audioUrl, setAudioUrl] = useState<string | null>(
     defaultAudioUrl || null,
   );
@@ -116,205 +121,116 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
   // Track if player has been started at least once
   const hasBeenStartedRef = useRef(false);
 
-  const setVolume = useCallback(
-    async (newVolume: number) => {
-      setVolumeState(newVolume);
-      try {
-        await player.setVolume(newVolume / 100);
-      } catch (err) {
-        console.warn('Failed to set volume:', err);
-      }
-    },
-    [player],
-  );
+  const setVolume = useCallback(async (newVolume: number): Promise<void> => {
+    setVolumeState(newVolume);
+    try {
+      await player.setVolume(newVolume / 100);
+    } catch (err) {
+      console.warn('Failed to set volume:', err);
+    }
+  }, [player]);
 
   // Helper to apply playback speed across platform variations
-  const applyPlaybackSpeedToPlayer = useCallback(
-    async (rate: number) => {
-      try {
-        if ((player as any).setPlaybackSpeed) {
-          await (player as any).setPlaybackSpeed(rate);
-          return;
-        }
-        if ((player as any).setRate) {
-          await (player as any).setRate(rate);
-          return;
-        }
-        if ((player as any).setSpeed) {
-          await (player as any).setSpeed(rate);
-          return;
-        }
-        // Fallback: some versions expose static API
-        if ((AudioRecorderPlayer as any).setPlaybackSpeed) {
-          await (AudioRecorderPlayer as any).setPlaybackSpeed(rate);
-        }
-      } catch (err) {
-        console.warn('Playback speed not supported:', err);
-      }
-    },
-    [player],
-  );
+  const applyPlaybackSpeedToPlayer = useCallback(async (rate: number): Promise<void> => {
+    try {
+      await player.setRate(rate);
+    } catch {
+      // silent – speed may not be supported on some platforms yet
+    }
+  }, [player]);
 
-  const play = useCallback(async () => {
+  const ensureSetup = useCallback(async (): Promise<void> => {
+    // Idempotent guard – check queue; if succeeds assume setup done.
+    try {
+      await player.getQueue();
+      return;
+    } catch {
+      // proceed with setup
+    }
+    await player.setupPlayer();
+    await player.updateOptions({
+      capabilities: [
+        Capability.Play,
+        Capability.Pause,
+        Capability.SeekTo,
+        Capability.SkipToNext,
+        Capability.SkipToPrevious,
+        Capability.Stop,
+      ],
+      progressUpdateEventInterval: 1,
+    });
+  console.log('[AudioPlayer] TrackPlayer setup complete');
+  }, [player]);
+
+  const loadTrack = useCallback(async (url: string): Promise<void> => {
+    const track: TPTrack = {
+      id: 'single',
+      url,
+      title: 'Audio',
+      artist: ' ',
+    };
+    await player.reset();
+    await player.add([track]);
+    // Re-apply options after reset (some platforms clear them on reset)
+    try {
+      await player.updateOptions({
+        capabilities: [
+          Capability.Play,
+          Capability.Pause,
+          Capability.SeekTo,
+          Capability.SkipToNext,
+          Capability.SkipToPrevious,
+          Capability.Stop,
+        ],
+        progressUpdateEventInterval: 1,
+      });
+    } catch {}
+  }, [player]);
+
+  const play = useCallback(async (): Promise<void> => {
     if (!audioUrl) {
       setError('No audio URL provided');
       return;
     }
-
     setIsLoading(true);
     setIsBuffering(true);
     setError(null);
-
     try {
-      // If we have a known duration and a non-zero position (and not finished), prefer resuming
-      const canResume =
-        totalDuration > 0 &&
-        currentTimeRef.current > 0 &&
-        currentTimeRef.current < totalDuration &&
-        hasBeenStartedRef.current;
-
-      if (canResume) {
-        // Ensure listener is active before resuming (prevents update issues)
-        try {
-          player.removePlayBackListener();
-        } catch {
-          // Ignore if no listener was attached
-        }
-
-        // Re-attach listener for reliable updates
-        player.addPlayBackListener((e: PlayBackType) => {
-          // Always update ref and state from player position updates
-          currentTimeRef.current = e.currentPosition;
-          setCurrentPosition(e.currentPosition);
-
-          if (e.duration > 0) {
-            setTotalDuration(e.duration);
-          }
-
-          // Stop buffering when we start getting position updates
-          if (e.currentPosition > 0) setIsBuffering(false);
-
-          // Handle end of playback
-          if (e.duration > 0 && e.currentPosition >= e.duration) {
-            setIsPlaying(false);
-            currentTimeRef.current = 0;
-            setCurrentPosition(0);
-            hasBeenStartedRef.current = false; // Reset so next play() starts fresh
-            player.stopPlayer().catch(() => { });
-            player.removePlayBackListener();
-          }
-        });
-
-        // Resume existing playback session
-        await player.setVolume(isMuted ? 0 : volume / 100).catch(() => {});
-        await player.resumePlayer();
-
-        // Sync player to ref position in case they differ
-        if (Math.abs(currentPosition - currentTimeRef.current) > 1000) {
-          // 1 second tolerance
-          try {
-            await player.seekToPlayer(currentTimeRef.current);
-            setCurrentPosition(currentTimeRef.current);
-          } catch (err) {
-            console.warn('Failed to sync position on resume:', err);
-          }
-        }
-
-        await applyPlaybackSpeedToPlayer(playbackSpeed.value);
-        setIsPlaying(true);
-        setIsLoading(false);
-        setIsBuffering(false);
-        return;
+      await ensureSetup();
+      const queue = await player.getQueue();
+      if (queue.length === 0 || queue[0].url !== audioUrl) {
+        await loadTrack(audioUrl);
+        hasBeenStartedRef.current = true;
       }
-
-      // Fresh start: stop any previous playback and (re)attach listener
-      try {
-        await player.stopPlayer();
-        player.removePlayBackListener();
-      } catch {
-        // Ignore cleanup errors
-      }
-
-      // Add playback listener (fresh)
-      player.addPlayBackListener((e: PlayBackType) => {
-        // Always update ref and state from player position updates
-        // The player only sends updates when it's actually playing
-        currentTimeRef.current = e.currentPosition;
-        setCurrentPosition(e.currentPosition);
-
-        if (e.duration > 0) {
-          setTotalDuration(e.duration);
-        }
-
-        // Stop buffering when we start getting position updates
-        if (e.currentPosition > 0) setIsBuffering(false);
-
-        // Handle end of playback
-        if (e.duration > 0 && e.currentPosition >= e.duration) {
-          setIsPlaying(false);
-          currentTimeRef.current = 0;
-          setCurrentPosition(0);
-          hasBeenStartedRef.current = false; // Reset so next play() starts fresh
-          player.stopPlayer().catch(() => { });
-          player.removePlayBackListener();
-        }
-      });
-
-      // Start playback
-      await player.startPlayer(audioUrl);
-      hasBeenStartedRef.current = true;
-
-      // Sync player to ref position if user has seeked before playing
       if (currentTimeRef.current > 0) {
-        try {
-          await player.seekToPlayer(currentTimeRef.current);
-          setCurrentPosition(currentTimeRef.current);
-        } catch (err) {
-          console.warn('Failed to sync initial position:', err);
-        }
+        await player.seekTo(currentTimeRef.current / 1000);
       }
-
-      // Apply current settings
       await player.setVolume(isMuted ? 0 : volume / 100);
       await applyPlaybackSpeedToPlayer(playbackSpeed.value);
-
+      await player.play();
       setIsPlaying(true);
-      setIsLoading(false);
-      setIsBuffering(false);
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to start playback';
-      setError(errorMessage);
-      setIsPlaying(false);
+      const msg = err instanceof Error ? err.message : 'Failed to play';
+      setError(msg);
+      onError?.(msg);
+    } finally {
       setIsLoading(false);
       setIsBuffering(false);
-      onError?.(errorMessage);
     }
-  }, [
-    audioUrl,
-    player,
-    volume,
-    isMuted,
-    playbackSpeed.value,
-    onError,
-    totalDuration,
-    currentPosition,
-    applyPlaybackSpeedToPlayer,
-  ]);
+  }, [audioUrl, applyPlaybackSpeedToPlayer, ensureSetup, isMuted, loadTrack, onError, playbackSpeed.value, volume, player]);
 
-  const pause = useCallback(async () => {
+  const pause = useCallback(async (): Promise<void> => {
     try {
-      await player.pausePlayer();
+      await player.pause();
       setIsPlaying(false);
     } catch (err) {
       console.warn('Failed to pause:', err);
     }
   }, [player]);
 
-  const stop = useCallback(async () => {
+  const stop = useCallback(async (): Promise<void> => {
     try {
-      await player.stopPlayer();
-      player.removePlayBackListener();
+      await player.stop();
       setIsPlaying(false);
       currentTimeRef.current = 0;
       setCurrentPosition(0);
@@ -324,29 +240,21 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     }
   }, [player]);
 
-  const seekTo = useCallback(
-    async (position: number) => {
-      // Update ref immediately (source of truth for UI)
-      currentTimeRef.current = position;
-
-      // Update UI state immediately for responsive feedback
-      setCurrentPosition(position);
-      setAutoSync(true);
-
-      // Try to seek player if it has been started, but don't block UI
-      if (hasBeenStartedRef.current) {
-        try {
-          await player.seekToPlayer(position);
-        } catch (err) {
-          console.warn('Seek failed, will apply on next play:', err);
-        }
+  const seekTo = useCallback(async (position: number): Promise<void> => {
+    currentTimeRef.current = position;
+    setCurrentPosition(position);
+    setAutoSync(true);
+    try {
+      const state = await player.getPlaybackState();
+      if (state.state && state.state !== TPState.None) {
+        await player.seekTo(position / 1000);
       }
-      // If player hasn't started, position will be applied when play() is called
-    },
-    [player, setAutoSync],
-  );
+    } catch {
+      // silent – will apply on play
+    }
+  }, [player, setAutoSync]);
 
-  const toggleMute = useCallback(async () => {
+  const toggleMute = useCallback(async (): Promise<void> => {
     const newMuted = !isMuted;
     setIsMuted(newMuted);
     try {
@@ -356,7 +264,7 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     }
   }, [isMuted, volume, player]);
 
-  const cyclePlaybackSpeed = async (speed: {
+  const cyclePlaybackSpeed = useCallback(async (speed: {
     id: string;
     value: number;
     label: string;
@@ -365,15 +273,14 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     if (isPlaying) {
       await applyPlaybackSpeedToPlayer(speed.value);
     }
-  };
+  }, [applyPlaybackSpeedToPlayer, isPlaying]);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (!isCleanedUpRef.current) {
         isCleanedUpRef.current = true;
-        player.stopPlayer().catch(() => {});
-        player.removePlayBackListener();
+        player.reset().catch(() => {});
         currentTimeRef.current = 0;
         hasBeenStartedRef.current = false;
       }
@@ -381,53 +288,25 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
   }, [player]);
 
   // Helper to probe duration without exposing playback or touching loading flags
-  const probeDuration = useCallback(
-    async (url: string) => {
-      // Already have it
-      if (totalDuration > 0 && isReady) return;
-      let gotDuration = false;
-      try {
-        // Ensure clean state
-        try {
-          await player.stopPlayer();
-          player.removePlayBackListener();
-        } catch {}
-
-        const listener = (e: PlayBackType) => {
-          if (e.duration && e.duration > 0 && !gotDuration) {
-            gotDuration = true;
-            setTotalDuration(e.duration);
-            currentTimeRef.current = 0;
-            setCurrentPosition(0);
-            setIsReady(true);
-            player.stopPlayer().catch(() => {});
-            setIsLoading(false);
-            player.removePlayBackListener();
-          }
-        };
-        player.addPlayBackListener(listener);
-
-        await player.startPlayer(url);
-        // Mute during probe to avoid audible blip
-        try {
-          await player.setVolume(0);
-        } catch {}
-      } catch (err) {
-        setIsLoading(false);
-        // Leave isReady as-is; play() can still establish duration
+  const probeDuration = useCallback(async (url: string): Promise<void> => {
+    if (totalDuration > 0 && isReady) return;
+    try {
+      await ensureSetup();
+      await loadTrack(url);
+      const first = await player.getTrack(0);
+      if (first?.duration) {
+        const ms = first.duration * 1000;
+        setTotalDuration(ms);
+        setIsReady(true);
       }
-    },
-    [player, totalDuration, isReady],
-  );
+    } catch {}
+  }, [ensureSetup, isReady, loadTrack, player, totalDuration]);
 
   useEffect(() => {
-    // Allow clearing URL too
     const nextUrl = defaultAudioUrl ?? null;
     if (nextUrl !== audioUrl) {
-      // Stop any ongoing playback before switching URL
       if (isPlaying) {
-        player.stopPlayer().catch(() => {});
-        player.removePlayBackListener();
+        player.stop().catch(() => {});
         setIsPlaying(false);
       }
       currentTimeRef.current = 0;
@@ -438,8 +317,7 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
       setAudioUrl(nextUrl);
       hasBeenStartedRef.current = false;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultAudioUrl]);
+  }, [defaultAudioUrl, audioUrl, isPlaying, player]);
 
   // Preload current URL to discover duration; no timers, minimal state changes
   useEffect(() => {
@@ -451,44 +329,82 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({
     }
     if (isReady || totalDuration > 0) return;
     probeDuration(audioUrl);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [audioUrl]);
+  }, [audioUrl, isReady, totalDuration, probeDuration]);
 
-  const contextValue: AudioPlayerContextType = {
-    player,
-    isPlaying,
-    isLoading,
-    isBuffering,
-    isReady,
-    currentPosition,
-    totalDuration,
-    currentTimeRef,
-    volume,
-    isMuted,
-    playbackSpeed,
-    audioUrl,
-    isSliding,
-    previewPosition,
-    error,
-    setIsPlaying,
-    setIsLoading,
-    setIsBuffering,
-    setCurrentPosition,
-    setTotalDuration,
-    setVolume,
-    setIsMuted,
-    setPlaybackSpeed,
-    setAudioUrl,
-    setError,
-    setIsSliding,
-    setPreviewPosition,
-    play,
-    pause,
-    stop,
-    seekTo,
-    toggleMute,
-    cyclePlaybackSpeed,
-  };
+  // Derive playing/buffering from hook
+  const playbackState = usePlaybackState();
+  const progress = useProgress(); // position / duration in seconds
+
+  // Sync hook progress into our ms-based state (minimal conversions)
+  useEffect(() => {
+    const posMs = progress.position * 1000;
+    currentTimeRef.current = posMs;
+    setCurrentPosition(posMs);
+    if (progress.duration > 0) {
+      const durMs = progress.duration * 1000;
+      if (durMs !== totalDuration) setTotalDuration(durMs);
+      if (!isReady) setIsReady(true);
+    }
+  }, [progress.position, progress.duration, isReady, totalDuration]);
+
+  useEffect(() => {
+    const stateVal = (playbackState as any)?.state ?? playbackState;
+    if (stateVal === TPState.Playing) {
+      setIsPlaying(true);
+      setIsBuffering(false);
+    } else if (stateVal === TPState.Buffering) {
+      setIsBuffering(true);
+    } else if (
+      stateVal === TPState.Paused ||
+      stateVal === TPState.Stopped ||
+      stateVal === TPState.Ended
+    ) {
+      setIsPlaying(false);
+      if (stateVal === TPState.Stopped || stateVal === TPState.Ended) {
+        currentTimeRef.current = 0;
+        setCurrentPosition(0);
+      }
+    }
+  }, [playbackState]);
+
+  const contextValue: AudioPlayerContextType = React.useMemo(
+    () => ({
+      player,
+      isPlaying,
+      isLoading,
+      isBuffering,
+      isReady,
+      currentPosition,
+      totalDuration,
+      currentTimeRef,
+      volume,
+      isMuted,
+      playbackSpeed,
+      audioUrl,
+      isSliding,
+      previewPosition,
+      error,
+      setIsPlaying,
+      setIsLoading,
+      setIsBuffering,
+      setCurrentPosition,
+      setTotalDuration,
+      setVolume,
+      setIsMuted,
+      setPlaybackSpeed,
+      setAudioUrl,
+      setError,
+      setIsSliding,
+      setPreviewPosition,
+      play,
+      pause,
+      stop,
+      seekTo,
+      toggleMute,
+      cyclePlaybackSpeed,
+    }),
+  [player,isPlaying,isLoading,isBuffering,isReady,currentPosition,totalDuration,volume,isMuted,playbackSpeed,audioUrl,isSliding,previewPosition,error,play,pause,stop,seekTo,toggleMute,cyclePlaybackSpeed,setVolume],
+  );
 
   return (
     <AudioPlayerContext.Provider value={contextValue}>

@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2151953F2E535B5F00148495 /* hermes.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 215195392E535B5800148495 /* hermes.xcframework */; };
-		215195402E535B5F00148495 /* hermes.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 215195392E535B5800148495 /* hermes.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		215195412E535B6000148495 /* NativeAppReact.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2151953A2E535B5800148495 /* NativeAppReact.xcframework */; };
-		215195422E535B6000148495 /* NativeAppReact.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2151953A2E535B5800148495 /* NativeAppReact.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		215195432E535B6100148495 /* ReactBrownfield.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2151953B2E535B5800148495 /* ReactBrownfield.xcframework */; };
-		215195442E535B6100148495 /* ReactBrownfield.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2151953B2E535B5800148495 /* ReactBrownfield.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		21CE4C7C2E857DA400EF3A75 /* hermes.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21CE4C762E857D9700EF3A75 /* hermes.xcframework */; };
+		21CE4C7D2E857DA400EF3A75 /* hermes.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 21CE4C762E857D9700EF3A75 /* hermes.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		21CE4C7E2E857DA600EF3A75 /* NativeAppReact.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21CE4C772E857D9700EF3A75 /* NativeAppReact.xcframework */; };
+		21CE4C7F2E857DA600EF3A75 /* NativeAppReact.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 21CE4C772E857D9700EF3A75 /* NativeAppReact.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		21CE4C802E857DA700EF3A75 /* ReactBrownfield.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 21CE4C782E857D9700EF3A75 /* ReactBrownfield.xcframework */; };
+		21CE4C812E857DA700EF3A75 /* ReactBrownfield.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 21CE4C782E857D9700EF3A75 /* ReactBrownfield.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -22,9 +22,9 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				215195422E535B6000148495 /* NativeAppReact.xcframework in Embed Frameworks */,
-				215195442E535B6100148495 /* ReactBrownfield.xcframework in Embed Frameworks */,
-				215195402E535B5F00148495 /* hermes.xcframework in Embed Frameworks */,
+				21CE4C7F2E857DA600EF3A75 /* NativeAppReact.xcframework in Embed Frameworks */,
+				21CE4C812E857DA700EF3A75 /* ReactBrownfield.xcframework in Embed Frameworks */,
+				21CE4C7D2E857DA400EF3A75 /* hermes.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -33,9 +33,9 @@
 
 /* Begin PBXFileReference section */
 		213096E72E3A452D002E8282 /* AudioPlayerReact.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AudioPlayerReact.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		215195392E535B5800148495 /* hermes.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = hermes.xcframework; sourceTree = "<group>"; };
-		2151953A2E535B5800148495 /* NativeAppReact.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = NativeAppReact.xcframework; sourceTree = "<group>"; };
-		2151953B2E535B5800148495 /* ReactBrownfield.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = ReactBrownfield.xcframework; sourceTree = "<group>"; };
+		21CE4C762E857D9700EF3A75 /* hermes.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = hermes.xcframework; sourceTree = "<group>"; };
+		21CE4C772E857D9700EF3A75 /* NativeAppReact.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = NativeAppReact.xcframework; sourceTree = "<group>"; };
+		21CE4C782E857D9700EF3A75 /* ReactBrownfield.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = ReactBrownfield.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -64,9 +64,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2151953F2E535B5F00148495 /* hermes.xcframework in Frameworks */,
-				215195432E535B6100148495 /* ReactBrownfield.xcframework in Frameworks */,
-				215195412E535B6000148495 /* NativeAppReact.xcframework in Frameworks */,
+				21CE4C7E2E857DA600EF3A75 /* NativeAppReact.xcframework in Frameworks */,
+				21CE4C802E857DA700EF3A75 /* ReactBrownfield.xcframework in Frameworks */,
+				21CE4C7C2E857DA400EF3A75 /* hermes.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,9 +78,9 @@
 			children = (
 				213096E92E3A452D002E8282 /* AudioPlayerReact */,
 				213096E82E3A452D002E8282 /* Products */,
-				215195392E535B5800148495 /* hermes.xcframework */,
-				2151953A2E535B5800148495 /* NativeAppReact.xcframework */,
-				2151953B2E535B5800148495 /* ReactBrownfield.xcframework */,
+				21CE4C762E857D9700EF3A75 /* hermes.xcframework */,
+				21CE4C772E857D9700EF3A75 /* NativeAppReact.xcframework */,
+				21CE4C782E857D9700EF3A75 /* ReactBrownfield.xcframework */,
 			);
 			sourceTree = "<group>";
 		};
@@ -307,10 +307,13 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AudioPlayerReact/Info.plist;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Require $(PRODUCT_NAME) permission to use your microphone. You won't be recorded.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app needs access to your microphone to record audio.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIRequiredDeviceCapabilities = arm64;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -343,10 +346,13 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AudioPlayerReact/Info.plist;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Require $(PRODUCT_NAME) permission to use your microphone. You won't be recorded.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This app needs access to your microphone to record audio.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIRequiredDeviceCapabilities = arm64;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
