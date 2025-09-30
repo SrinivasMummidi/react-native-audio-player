@@ -2,7 +2,7 @@ import TrackPlayer, { Event, RepeatMode, State, Capability } from 'react-native-
 
 // Basic playback service handling remote events & focus.
 // Extend as needed (e.g., handling custom events, analytics, etc.).
-export default async function () {
+const trackPlayerService = async () => {
   // Ensure options reflect remote controls we respond to
   try {
     await TrackPlayer.updateOptions({
@@ -42,4 +42,6 @@ export default async function () {
       } catch {}
     }
   });
-}
+};
+
+export default trackPlayerService;

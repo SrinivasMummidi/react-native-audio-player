@@ -12,7 +12,7 @@ AppRegistry.registerComponent('NativeApp', () => App);
 
 // Register playback service for background & notification controls
 try {
-  TrackPlayer.registerPlaybackService(trackPlayerService);
+  TrackPlayer.registerPlaybackService(() => trackPlayerService);
 } catch (e) {
   console.log('failed to link trackPlayerService', e);
 }
